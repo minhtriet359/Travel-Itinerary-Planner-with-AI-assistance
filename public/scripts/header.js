@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
 });
 
+// display login modal when login is clicked
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById("login-modal").addEventListener('click', displayLoginModal); 
+});
+
 //add calendar drop down
 document.addEventListener('DOMContentLoaded', function() {
     flatpickr("#start-date", {
@@ -52,3 +57,9 @@ document.querySelectorAll('.search-input').forEach((input)=>{
         });
     })
 });
+
+// functions
+function displayLoginModal() {
+    const myModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    myModal.show();
+}
