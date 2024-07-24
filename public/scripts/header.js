@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 //add calendar drop down
 document.addEventListener('DOMContentLoaded', function() {
-    flatpickr("#check-in", {
+    flatpickr("#start-date", {
         dateFormat: "Y-m-d",
         minDate: "today",
         onChange: function(selectedDates, dateStr, instance) {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    flatpickr("#check-out", {
+    flatpickr("#end-date", {
         dateFormat: "Y-m-d",
         minDate: "today",
         onChange: function(selectedDates, dateStr, instance) {
