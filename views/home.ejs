@@ -3,44 +3,74 @@
   <head>
     <meta charset="utf-8">
     <title>Home Page</title>
+    <!-- css files -->
     <link rel="stylesheet" href="style/shared/header.css">
     <link rel="stylesheet" href="style/shared/general.css">
+    <link rel="stylesheet" href="style/shared/homePage.css">
+    <!-- flatpickr for calendar date input -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
   </head>
   <body>
-    
-    <div class="website-header">
-      <div class="website-header-left-section">
-        <a href='/' class="header-link">
-          <img class="website-logo" src="img/website-logo1.png">
-        </a>
-      </div>
 
-      <div class="website-header-middle-section">
-        <input class="search-input" id="start-location" type="text" placeholder="Start location">
-        <div class="input-separator"></div>
-        <input class="search-input" id="end-location" type="text" placeholder="End location">
-        <div class="input-separator"></div>
-        <input class="search-input" id="start-date" type="text" placeholder="Start date" class="search-input">
-        <div class="input-separator"></div>
-        <input class="search-input" id="end-date" type="text" placeholder="End date" class="search-input">
-        <div class="input-separator"></div>
-        <input class="search-input" id="add-guest" type="text" placeholder="Add guests">
-        <button class="search-button">
-          <img class="search-icon" src="img/icon/search-icon.png">
-        </button>
-      </div>
+    <%- include('partials/header') %>
 
-      <div class="website-header-right-section">
-        <img class="user-icon" src="img/icon/default-user-icon.png">
-        <div class="dropdown-menu">
-          <a href="#" class="dropdown-item">Sign up</a>
-          <a href="#" class="dropdown-item">Log in</a>
-          <a href="#" class="dropdown-item">Settings</a>
+    <div class="main">
+      <h1>America</h1>
+      <div class="itinerary-grid">
+        <div class="itinerary-preview">
+          <div class="thumbnail-row">
+            <img class="thumbnail-photo" src="/img/location-photos/Alaska.jpg">
+            <p class="thumbnail-intro">Alaska</p>
+            <div class="trip-duration">10 Days</div>
+          </div>
+          <div class="trip-info">
+            <p>Anchorage | Kenai Fjords | Denali</p>
+          </div>
         </div>
-      </div>
+
+        <div class="itinerary-preview">
+          <div class="thumbnail-row">
+            <img class="thumbnail-photo" src="/img/location-photos/California.jpg">
+            <p class="thumbnail-intro">California</p>
+            <div class="trip-duration">7-10 Days</div>
+          </div>
+          <div class="trip-info">
+            <p>SF | Monterey | LA | San Diego</p>
+          </div>
+        </div>
+      </div> 
+
+      <h1>Europe</h1>
+      <div class="itinerary-grid">
+        <div class="itinerary-preview">
+          <div class="thumbnail-row">
+            <img class="thumbnail-photo" src="/img/location-photos/Italy.jfif">
+            <p class="thumbnail-intro">Italy</p>
+            <div class="trip-duration">14 Days</div>
+          </div>
+          <div class="trip-info">
+            <p>Rome | Sorrento | Tuscany | Cinque Terre | Venice</p>
+          </div>
+        </div>
+
+        <div class="itinerary-preview">
+          <div class="thumbnail-row">
+            <img class="thumbnail-photo" src="/img/location-photos/Portugal.jpg">
+            <p class="thumbnail-intro">Portugal</p>
+            <div class="trip-duration">10 Days</div>
+          </div>
+          <div class="trip-info">
+            <p>Lisbon | Porto | Algarve</p>
+          </div>
+        </div>
+      </div> 
     </div>
+    
 
     <script src="scripts/header.js"></script>
     
