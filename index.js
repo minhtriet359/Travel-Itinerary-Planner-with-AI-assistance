@@ -18,7 +18,7 @@ app.use(express.urlencoded({extended: true}));
 
 //routes
 app.get('/', (req, res) => {
-  res.render('index')
+  res.render('home')
 });
 
 //start server
