@@ -1,3 +1,12 @@
+.itinerary-detail-link{
+  text-decoration: none;
+}
+
+.itinerary-detail-link:visited{
+  text-decoration: none;
+  color: inherit;
+}
+
 .itinerary-grid{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

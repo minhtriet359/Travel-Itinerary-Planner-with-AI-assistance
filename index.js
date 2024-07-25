@@ -21,6 +21,10 @@ app.get('/', (req, res) => {
   res.render('home')
 });
 
+app.get('/itinerary-detail', (req, res) => {
+  res.render('itinerary')
+})
+
 //start server
 app.listen(3000, () =>{
   console.log("Expresss server running...")
