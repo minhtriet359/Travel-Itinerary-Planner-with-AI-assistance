@@ -27,6 +27,31 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey: googleAPIKey});
 });
 
+// sign up form submitted
+app.post("/user/new", async function(req, res) {
+  let fName = req.body.firstName;
+  let lName = req.body.lastName;
+  let email = req.body.emailAddress;
+  let password = req.body.password;
+  let verifyPassword = req.body.confirmPassword;
+
+  let sql = `INSERT INTO users (firstName, lastName, emailAddress, password)
+                VALUES (?, ?, ?, ? )`;
+  let params = [fName, lName, email, password];
+  let rows = await executeSQL(sql, params);
+
+  res.render('home');
+}); 
+
+async function executeSQL(sql, params) {
+  return new Promise (function (resolve, reject) {
+    pool.query(sql, params, function (err, rows, fields) {
+      if (err) throw err;
+        resolve(rows);
+    });
+  });
+}//executeSQL
+
 //start server
 app.listen(3000, () =>{
   console.log("Expresss server running...")
