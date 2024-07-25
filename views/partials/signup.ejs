@@ -1,0 +1,70 @@
+<!-- sign up modal -->
+<form>
+<div id="signupModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sign Up</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+
+          
+          <!-- first name + last name -->
+            <div class="row">
+              <div class="col-md-6">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+              </div>
+              </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                </div>
+              </div>
+           </div>
+
+            <!-- email address -->
+            <div class="row">
+              <div class="col-md-12">
+              <div class="form-group">
+               <label for="emailAddress">Email Address</label>
+                <input type="email" class="form-control" id="emailAddress" placeholder="Enter email" required>
+               </div>
+              </div>
+            </div>
+
+            <!-- password -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" placeholder="Password" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- FRONT END TO-DO: add function to verify passwords match  -->
+            <!-- confirm password -->
+            <div class="row">
+              <div class="col-md-12">
+               <div class="form-group">
+                 <label for="confirmPassword">Password</label>
+                 <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- sign up or close -->
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </form>

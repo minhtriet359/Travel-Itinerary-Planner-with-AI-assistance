@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById("login-modal").addEventListener('click', displayLoginModal); 
 });
 
+// display signup modal
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById("signup-modal").addEventListener('click', displaySignupModal); 
+});
+
 //add calendar drop down
 document.addEventListener('DOMContentLoaded', function() {
     flatpickr("#start-date", {
@@ -61,5 +66,10 @@ document.querySelectorAll('.search-input').forEach((input)=>{
 // functions
 function displayLoginModal() {
     const myModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    myModal.show();
+}
+
+function displaySignupModal() {
+    const myModal = new bootstrap.Modal(document.getElementById('signupModal'));
     myModal.show();
 }
