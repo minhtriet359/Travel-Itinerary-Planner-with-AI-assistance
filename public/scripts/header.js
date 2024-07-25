@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById("signup-modal").addEventListener('click', displaySignupModal); 
 });
 
+
 //add calendar drop down
 document.addEventListener('DOMContentLoaded', function() {
     flatpickr("#start-date", {
