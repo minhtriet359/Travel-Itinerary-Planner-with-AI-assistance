@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 //highlight the focused input by changing background color
-const midSection=document.querySelector('.website-header-middle-section');
 document.querySelectorAll('.search-input').forEach((input)=>{
+    let midSection=document.querySelector('.website-header-middle-section');
     input.addEventListener('focus', ()=>{
         midSection.style.backgroundColor = '#e6e6e6';
         document.querySelectorAll('.search-input').forEach((inp)=>{
