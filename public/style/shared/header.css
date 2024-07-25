@@ -16,7 +16,6 @@
 
 .website-logo{
   width:80px;
-  margin-top: 5px;
 }
 
 .website-header-middle-section {
@@ -52,9 +51,9 @@
   min-width: 40px;
   border: none;
   border-radius: 20px;
-  padding: 10px;
+  padding: 0px 10px;
   margin: 0;
-  height: 26px;
+  height: 46px;
 }
 
 .search-input:hover{

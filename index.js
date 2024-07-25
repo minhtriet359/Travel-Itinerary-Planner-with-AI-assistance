@@ -13,6 +13,8 @@ app.use(session({
   saveUninitialized: true
 }));
 
+const googleAPIKey = process.env['google_API_key']
+
 //add express middleware to parse form data
 app.use(express.urlencoded({extended: true}));
 
@@ -22,8 +24,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/itinerary-detail', (req, res) => {
-  res.render('itinerary')
-})
+  res.render('itinerary', {googleAPIKey: googleAPIKey});
+});
 
 //start server
 app.listen(3000, () =>{
