@@ -5,6 +5,7 @@
     <title>Itinerary Detail</title>
     <!-- css files -->
     <link rel="stylesheet" href="/style/shared/header.css">
+    <link rel="stylesheet" href="/style/shared/sidebar.css">
     <link rel="stylesheet" href="/style/shared/general.css">
     <link rel="stylesheet" href="/style/itinerary.css">
     <!-- flatpickr for calendar date input -->
@@ -17,20 +18,20 @@
 </head>
 <body>
     <%- include('partials/header') %>
+    <div class="sidebar">
+        Sidebar
+    </div>
     <div class="itinerary-main">
         <div class="itinerary-detail-grid">
             <h1>Itinerary content here</h1>
-            <!-- Your content here -->
-            <div style="height: 2000px;"> <!-- Example content to make it scrollable -->
-                test Scrolling
-            </div>
+            <!-- Trip content -->
         </div>
         <div id="map">
             <iframe
-                style="border:0"
+                style="border:0; padding-top:80px;"
                 loading="lazy"
                 allowfullscreen
-                src="https://www.google.com/maps/embed/v1/place?key=<%= googleAPIKey %>&q=Space+Needle,Seattle+WA">
+                src="https://www.google.com/maps/embed/v1/directions?key=<%= googleAPIKey %>&origin=Archorage,Alaska&waypoints=Kenai+Fjords+National+Park&destination=Denali+National+Park,Alaska&avoid=tolls|highways"
             </iframe>
         </div>
     </div>
