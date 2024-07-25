@@ -21,6 +21,7 @@
 </head>
 <body>
     <%- include('partials/header') %>
+        
     <div class="sidebar">
         Sidebar
     </div>
@@ -34,11 +35,15 @@
                 style="border:0; padding-top:80px;"
                 loading="lazy"
                 allowfullscreen
-                src="https://www.google.com/maps/embed/v1/directions?key=<%= googleAPIKey %>&origin=Archorage,Alaska&waypoints=Kenai+Fjords+National+Park&destination=Denali+National+Park,Alaska&avoid=tolls|highways"
+                src="https://www.google.com/maps/embed/v1/directions?key=<%= googleAPIKey %>&origin=Archorage,Alaska&waypoints=Kenai+Fjords+National+Park&destination=Denali+National+Park,Alaska&avoid=tolls|highways">
             </iframe>
         </div>
     </div>
+        
     <%- include('partials/login.ejs') %>
     <%- include('partials/signup.ejs') %>
+        
+    <script src="/scripts/itinerary.js" type="module"></script>
+
 </body>
 </html>
