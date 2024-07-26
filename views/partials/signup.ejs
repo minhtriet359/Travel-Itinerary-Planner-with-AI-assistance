@@ -9,7 +9,7 @@
       <div class="modal-body">
         <div class="container-fluid">
 
-          <form method="POST" action="/user/new">
+          <form method="POST" action="/user/new" autocomplete="off">
           <!-- first name + last name -->
             <div class="row">
               <div class="col-md-6">
@@ -53,6 +53,7 @@
                <div class="form-group">
                  <label for="confirmPassword">Password</label>
                  <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" required>
+                     
               </div>
             </div>
           </div>
@@ -63,6 +64,8 @@
             <button type="submit" class="btn btn-primary">Sign Up</button>
           </div>
         </form>
+
+      
       </div>
     </div>
   </div>
