@@ -35,6 +35,7 @@ export function renderHeader(){
             const myModal = new bootstrap.Modal(document.getElementById('loginModal'));
             myModal.show();
         });
+        
         // display signup modal when signup is clicked
         document.getElementById("signup-modal").addEventListener('click',()=>{
             const myModal = new bootstrap.Modal(document.getElementById('signupModal'));

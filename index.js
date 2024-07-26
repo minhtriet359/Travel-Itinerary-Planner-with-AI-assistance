@@ -6,6 +6,7 @@ const pool=require('./dbpool.js')
 
 const app = express();
 app.set("view engine", "ejs");
+
 app.use(express.static("public"));
 app.use(session({
   secret: "top secret!",
@@ -27,7 +28,7 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey: googleAPIKey});
 });
 
-// sign up form submitted
+//process sign-up request
 app.post("/user/new", async function(req, res) {
   let fName = req.body.firstName;
   let lName = req.body.lastName;
@@ -41,7 +42,32 @@ app.post("/user/new", async function(req, res) {
   let rows = await executeSQL(sql, params);
 
   res.render('home');
-}); 
+});
+
+// process login request
+app.post("/user/login", async function(req, res) {
+  let email = req.body.emailAddress;
+  let password = req.body.password;
+  let message = "";
+  let databasePassword = "";
+  
+  let sql = `SELECT * FROM users WHERE emailAddress = ?`;
+  let rows = await executeSQL(sql, [email]);
+
+  if (rows.length > 0) {
+    databasePassword = rows[0].password;
+    if (password == databasePassword) {
+      req.session.authenticated = true;
+      message = `Welcome Back, ${rows[0].firstName}!`;
+    } else {
+      message = "Incorrect Password";
+    }
+  } else {
+    message = "Invalid Email";
+  }
+  
+  res.render('home',{message:message});
+});
 
 async function executeSQL(sql, params) {
   return new Promise (function (resolve, reject) {
@@ -51,6 +77,15 @@ async function executeSQL(sql, params) {
     });
   });
 }//executeSQL
+
+// middleware function for verifying user has been authenticated 
+function isAuthenticated(req, res, next) {
+  if (!req.session.authenticated) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+}//
 
 //start server
 app.listen(3000, () =>{
