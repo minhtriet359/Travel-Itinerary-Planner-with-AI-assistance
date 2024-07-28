@@ -19,10 +19,6 @@ html, body {
   width: 50%;
   position: fixed;
   right: 0;
-  height: 100%;
-}
-
-#map iframe {
-  width: 100%;
-  height: 100%;
+  top: 85px;
+  height: calc(100% - 85px);
 }
