@@ -29,6 +29,9 @@ export function renderHeader(){
                 // Handle check-out date change
             }
         });
+
+        //use Google autosuggest to search for locations
+        const destInp = new google.maps.places.SearchBox(document.getElementById('search-destination'));
         
         // display login modal when login is clicked
         document.getElementById("login-modal").addEventListener('click',()=>{

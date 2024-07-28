@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended: true}));
 
 //routes
 app.get('/', (req, res) => {
-  res.render('home')
+  res.render('home',{googleAPIKey: googleAPIKey})
 });
 
 app.get('/itinerary-detail', (req, res) => {

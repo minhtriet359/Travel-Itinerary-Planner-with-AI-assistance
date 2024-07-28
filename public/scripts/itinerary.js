@@ -3,6 +3,6 @@ import * as map from './modules/map.js';
 
 console.log("Itinerary page loaded");
 
-map.initMap({ lat: -34.397, lng: 150.644 });
-
 renderHeader();
+
+map.initMap({ lat: 61.2181, lng: -149.9003 });

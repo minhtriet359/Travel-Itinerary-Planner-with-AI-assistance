@@ -69,8 +69,8 @@
   background-color: #e6e6e6
 }
 
-#start-location, #end-location{
-  flex: 1.4;
+#search-destination{
+  flex: 2.0;
 }
 
 #add-guest{
