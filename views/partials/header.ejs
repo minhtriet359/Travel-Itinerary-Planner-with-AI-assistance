@@ -1,7 +1,7 @@
 <div class="website-header">
   <div class="website-header-left-section">
     <a href='/' class="header-link">
-      <img class="website-logo" src="img/website-logo.png">
+      <img class="website-logo" src="/img/website-logo.png">
     </a>
   </div>
 
@@ -14,29 +14,21 @@
     <div class="input-separator"></div>
     <input class="search-input" id="add-guest" type="text" placeholder="Guests">
     <button class="search-button">
-      <img class="search-icon" src="img/icon/search-icon.png">
+      <img class="search-icon" src="/img/icon/search-icon.png">
     </button>
   </div>
 
   <div class="website-header-right-section">
-    <img class="user-icon" src="img/icon/default-user-icon.png">
+    <img class="user-icon" src="/img/icon/default-user-icon.png">
     <div class="dropdown-menu">
-      <a href="#" id="signup-modal" class="dropdown-item">Sign up</a>
-      <a href="#" id="login-modal" class="dropdown-item">Log in</a>
-      <a href="#" class="dropdown-item">Settings</a>
-    </div>
-
-  <!-- placeholder for showing login status, feel free to adjust styling -->
-  <div id="loginStatus">
-    <% if (typeof message != "undefined") { %>
-      <%=message%>
-    <% } %> 
-  </div>
-
-
-
-
-
-        
+      <% if (loggedIn) { %>
+        <a href="#" id="userId" class="dropdown-item"><%=userId%></a>
+        <a href="#" class="dropdown-item">Settings</a>
+        <a href="/logout" id="logout-modal" class="dropdown-item">Log Out</a>
+      <% }  else { %>
+        <a href="#" id="login-modal" class="dropdown-item">Log in</a>
+        <a href="#" id="signup-modal" class="dropdown-item">Sign up</a>
+      <% } %>
+    </div>       
   </div>
 </div>

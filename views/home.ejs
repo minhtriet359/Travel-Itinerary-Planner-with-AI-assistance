@@ -13,6 +13,11 @@
   <body>
     <%- include('partials/header') %>
     <div class="main-home">
+      <div class="text-end">
+        <% if (typeof message != "undefined") { %>
+          <%=message%>
+          <% } %>
+      </div>
       <h1>America</h1>
       <div class="itinerary-grid">
         <a class="itinerary-detail-link" href='/itinerary-detail'>
@@ -74,7 +79,6 @@
 
     <%- include('partials/login.ejs') %>
     <%- include('partials/signup.ejs') %>
-
     <script src="/scripts/home.js" type="module"></script>
   </body>
 </html>
