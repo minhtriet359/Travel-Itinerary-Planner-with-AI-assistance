@@ -19,7 +19,7 @@ app.use(session({
   cookie: { secure: true }
 }));
 
-const googleAPIKey = process.env['google_API_key']
+const googleAPIKey = process.env['google_API_key'];
 
 //add express middleware to parse form data
 app.use(express.urlencoded({extended: true}));
@@ -32,12 +32,13 @@ app.use(function(req, res, next) {
 
 //routes
 app.get('/', (req, res) => {
-  res.render('home',{googleAPIKey: googleAPIKey})
+  res.render('home',{googleAPIKey})
+  
 });
 
 app.get('/itinerary-detail', (req, res) => {
   
-  res.render('itinerary', {googleAPIKey: googleAPIKey});
+  res.render('itinerary', {googleAPIKey});
 });
 
 //process sign-up request
