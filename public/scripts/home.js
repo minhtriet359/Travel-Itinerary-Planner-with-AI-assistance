@@ -96,6 +96,7 @@ for (let continent in locations) {
   
 }
 
+
 document.querySelector('.main-home').innerHTML=itineraryHtml;
 
 renderHeader();
