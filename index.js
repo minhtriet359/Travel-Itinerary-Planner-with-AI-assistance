@@ -33,12 +33,11 @@ app.use(function(req, res, next) {
 //routes
 app.get('/', (req, res) => {
   res.render('home',{googleAPIKey})
-  
 });
 
 app.get('/itinerary-detail', (req, res) => {
-  
-  res.render('itinerary', {googleAPIKey});
+  const { destination, startDate, endDate, guests } = req.query;
+  res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
 });
 
 //process sign-up request

@@ -146,3 +146,4 @@ function getPlaceAddress(place) {
   const address = `${streetNumber} ${streetName}, ${city}`;
   return address.trim();
 }
+
