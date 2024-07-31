@@ -9,6 +9,9 @@ const pool=require('./dbpool.js')
 
 const path = require('path');
 
+require("dotenv").config();
+const OpenAI = require('openai');
+
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -22,6 +25,11 @@ app.use(session({
 }));
 
 const googleAPIKey = process.env['google_API_key'];
+
+//Initialize OpenAI configuration
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // This is also the default, can be omitted
+});
 
 // Define the path to the data folder and JSON file
 const locationsPath = path.join(__dirname, 'data', 'locations.json');
@@ -127,6 +135,31 @@ app.get('/loggedOut', (req, res) => {
   }
   res.render('home', {message:message});
 })
+
+//Chatbot
+app.get('/chatbot', (req, res) => {
+  res.render('chatbot', { googleAPIKey: googleAPIKey});
+});
+
+app.post('/chatbot-response', async (req, res) => {
+  const userQuery = req.body.query;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a travel assistant. Provide helpful information about travel destinations, tips, and itineraries.' },
+        { role: 'user', content: userQuery },
+      ],
+    });
+
+    const assistantResponse = response.choices[0].message.content;
+    res.render('chatbot', { query: userQuery, response: assistantResponse, googleAPIKey: googleAPIKey });
+  } catch (error) {
+    console.error('Error:', error); // Log the error details
+    res.render('chatbot', { query: userQuery, response: 'An error occurred while processing your request.', googleAPIKey: googleAPIKey });
+  }
+});
 
 // functions
 async function executeSQL(sql, params) {
