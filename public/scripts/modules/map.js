@@ -1,6 +1,6 @@
 let map;
-const places={};
-const markers={};
+let places={};
+let markers={};
 
 //Map initialization
 export async function initMap(center) {
@@ -12,6 +12,12 @@ export async function initMap(center) {
     mapId: '6a6872677ff3e032'
   });
   nearbySearch(center, 50000, 'restaurant');
+  //Locations update as map is dragged
+  map.addListener("dragend", ()=>{
+    const newCenter=map.getCenter().toJSON();
+    clearMarkers();
+    nearbySearch(newCenter, 50000, 'restaurant');
+  });
 }
 
 //Search for nearby locations on the map based on type
@@ -28,12 +34,11 @@ export async function nearbySearch(center,radius,type) {
     },
     // optional parameters
     includedPrimaryTypes: [type],
-    maxResultCount: 10,
+    maxResultCount: 15,
     rankPreference: SearchNearbyRankPreference.POPULARITY,
   };
   let results = await Place.searchNearby(request);
   results= results.places;
-  console.log(results[0]);
   if (results.length) {
     // Loop through and get all the results.
     results.forEach((result) => {
@@ -65,6 +70,16 @@ export async function addMarker(type){
   });
 }
 
+//Clear all markers from the map
+export function clearMarkers(){
+  for (const type in markers){
+    markers[type].forEach((marker)=>{
+      if (marker.map) marker.setMap(null);
+    });
+    markers[type]=[];
+    places[type]=[];
+  };
+}
 
 //Store places in object
 export function savePlace(place, type){
@@ -142,7 +157,6 @@ function getPlaceAddress(place) {
     }
   });
   // Construct the full address
-  console.log(streetNumber, streetName)
   const address = `${streetNumber} ${streetName}, ${city}`;
   return address.trim();
 }
