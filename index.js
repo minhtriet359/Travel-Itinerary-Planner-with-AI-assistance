@@ -27,6 +27,7 @@ const googleAPIKey = process.env['google_API_key'];
 const locationsPath = path.join(__dirname, 'data', 'locations.json');
 const locations = require(locationsPath);
 
+
 //add express middleware to parse form data
 app.use(express.urlencoded({extended: true}));
 
@@ -157,7 +158,6 @@ function isAuthenticated(req, res, next) {
 
 
 // API endpoint to get locations data
-// import locations from 'data/locations.json';
 app.get('/api/locations', (req, res) => {
   res.json(locations);
 })
