@@ -7,6 +7,8 @@ const saltRounds = 10;
 const mysql = require('mysql');
 const pool=require('./dbpool.js')
 
+const path = require('path');
+
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -20,6 +22,10 @@ app.use(session({
 }));
 
 const googleAPIKey = process.env['google_API_key'];
+
+// Define the path to the data folder and JSON file
+const locationsPath = path.join(__dirname, 'data', 'locations.json');
+const locations = require(locationsPath);
 
 //add express middleware to parse form data
 app.use(express.urlencoded({extended: true}));
@@ -38,6 +44,11 @@ app.get('/', (req, res) => {
 app.get('/itinerary-detail', (req, res) => {
   const { destination, startDate, endDate, guests } = req.query;
   res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
+});
+
+//API to fetch data from front end to backend
+app.get('/api/locations', (req, res) => {
+  res.json(locations);
 });
 
 //process sign-up request
@@ -143,6 +154,13 @@ function isAuthenticated(req, res, next) {
     res.redirect("/");
   }
 }
+
+
+// API endpoint to get locations data
+// import locations from 'data/locations.json';
+app.get('/api/locations', (req, res) => {
+  res.json(locations);
+})
 
 
 //start server
