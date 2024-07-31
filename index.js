@@ -46,6 +46,10 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
 });
 
+app.get('/savedItineraries', isAuthenticated, (req, res) => {
+  res.render('savedItineraries',{googleAPIKey})
+});
+
 //API to fetch data from front end to backend
 app.get('/api/locations', (req, res) => {
   res.json(locations);
@@ -58,13 +62,19 @@ app.post("/user/new", async function(req, res) {
   let email = req.body.emailAddress;
   let password = req.body.password;
   let verifyPassword = req.body.confirmPassword;
-
+  let newsletterSignup = req.body.newsletterCheck;
+  let subscribed = 0;
+  
+  if (newsletterSignup == "on") {
+    subscribed = 1;
+  }
+  
   // generate bcrypt
   let bcryptPassword = generateBcrypt(password);
   
-  let sql = `INSERT INTO users (firstName, lastName, emailAddress, password)
-                VALUES (?, ?, ?, ? )`;
-  let params = [fName, lName, email, bcryptPassword];
+  let sql = `INSERT INTO users (firstName, lastName, emailAddress, password, subscribed)
+                VALUES (?, ?, ?, ?, ? )`;
+  let params = [fName, lName, email, bcryptPassword, subscribed];
   let rows = await executeSQL(sql, params);
 
   res.render('home');
@@ -95,7 +105,7 @@ app.post("/user/login", async function(req, res) {
     req.session.userId = data[0].firstName + " " + data[0].lastName;
     console.log(req.session.userId);
   } else {
-    console.log("WRONGGGG");
+    console.log("Incorrect login");
   }
   res.redirect('/loginAttempt');
 });
@@ -111,10 +121,9 @@ app.get('/loginAttempt', (req, res) => {
 });
 
 // log out
-app.get('/logout', (req, res) => {
+app.get('/logout', isAuthenticated, (req, res) => {
   req.session.authenticated = false;
   req.session.destroy();   // remove the session, including all variables
-  let message = "Logged Out";
   res.redirect('/loggedOut');
 });
 

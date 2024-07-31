@@ -18,17 +18,22 @@
     </button>
   </div>
 
-  <div class="website-header-right-section">
+  <div class="website-header-right-section fw-light">
+    <% if (typeof message != "undefined") { %>
+      <%=message%>   
+    <% } %>
     <img class="user-icon" src="/img/icon/default-user-icon.png">
     <div class="dropdown-menu">
+      <!-- If user logged in, show this menu -->
       <% if (loggedIn) { %>
-        <a href="#" id="userId" class="dropdown-item"><%=userId%></a>
-        <a href="#" class="dropdown-item">Settings</a>
-        <a href="/logout" id="logout-modal" class="dropdown-item">Log Out</a>
+        <span id="userId" class="dropdown-item fw-bold"><%=userId%></span>
+        <a href="/savedItineraries" class="dropdown-item fw-light">Itineraries</a>
+        <a href="/logout" id="logout-modal" class="dropdown-item fw-light">Log Out</a>
       <% }  else { %>
-        <a href="#" id="login-modal" class="dropdown-item">Log in</a>
-        <a href="#" id="signup-modal" class="dropdown-item">Sign up</a>
+        <!-- If user not logged in, show this menu -->
+        <a href="#" id="login-modal" class="dropdown-item fw-light">Log in</a>
+        <a href="#" id="signup-modal" class="dropdown-item fw-light">Sign up</a>
       <% } %>
-    </div>       
+    </div>
   </div>
 </div>
