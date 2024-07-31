@@ -46,7 +46,7 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
 });
 
-app.get('/savedItineraries', (req, res) => {
+app.get('/savedItineraries', isAuthenticated, (req, res) => {
   res.render('savedItineraries',{googleAPIKey})
 });
 
@@ -115,7 +115,7 @@ app.get('/loginAttempt', (req, res) => {
 });
 
 // log out
-app.get('/logout', (req, res) => {
+app.get('/logout', isAuthenticated, (req, res) => {
   req.session.authenticated = false;
   req.session.destroy();   // remove the session, including all variables
   res.redirect('/loggedOut');
