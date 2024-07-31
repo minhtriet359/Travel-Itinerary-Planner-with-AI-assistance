@@ -46,6 +46,10 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
 });
 
+app.get('/savedItineraries', (req, res) => {
+  res.render('savedItineraries',{googleAPIKey})
+});
+
 //API to fetch data from front end to backend
 app.get('/api/locations', (req, res) => {
   res.json(locations);
@@ -95,7 +99,7 @@ app.post("/user/login", async function(req, res) {
     req.session.userId = data[0].firstName + " " + data[0].lastName;
     console.log(req.session.userId);
   } else {
-    console.log("WRONGGGG");
+    console.log("Incorrect login");
   }
   res.redirect('/loginAttempt');
 });
