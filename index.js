@@ -26,7 +26,7 @@ app.use(session({
 
 const googleAPIKey = process.env['google_API_key'];
 
-Initialize OpenAI configuration
+// Initialize OpenAI configuration
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is also the default, can be omitted
 });
