@@ -13,70 +13,8 @@
   <body>
     <%- include('partials/header') %>
     <div class="main-home">
-      <div class="text-end">
-        <% if (typeof message != "undefined") { %>
-          <%=message%>
-          <% } %>
-      </div>
-      <h1>America</h1>
-      <div class="itinerary-grid">
-        <a class="itinerary-detail-link" href='/itinerary-detail'>
-          <div class="itinerary-preview">
-            <div class="thumbnail-row">
-              <img class="thumbnail-photo" src="/img/location-photos/Alaska.jpg">
-              <p class="thumbnail-intro">Alaska</p>
-              <div class="trip-duration">10 Days</div>
-            </div>
-            <div class="trip-info">
-              <p>Anchorage | Kenai Fjords | Denali</p>
-            </div>
-          </div>
-        </a>
-
-        <a class="itinerary-detail-link" href='/itinerary-detail'>
-          <div class="itinerary-preview">
-              <div class="thumbnail-row">
-                <img class="thumbnail-photo" src="/img/location-photos/California.jpg">
-                <p class="thumbnail-intro">California</p>
-                <div class="trip-duration">7-10 Days</div>
-              </div>
-              <div class="trip-info">
-                <p>SF | Monterey | LA | San Diego</p>
-              </div>
-            </div>
-          </div>
-        </a>
-        
-      <h1>Europe</h1>
-      <div class="itinerary-grid">
-        <a class="itinerary-detail-link" href='/itinerary-detail'>
-          <div class="itinerary-preview">
-            <div class="thumbnail-row">
-              <img class="thumbnail-photo" src="/img/location-photos/Italy.jfif">
-              <p class="thumbnail-intro">Italy</p>
-              <div class="trip-duration">14 Days</div>
-            </div>
-            <div class="trip-info">
-              <p>Rome | Sorrento | Tuscany | Cinque Terre | Venice</p>
-            </div>
-          </div>
-        </a>
-
-        <a class="itinerary-detail-link" href='/itinerary-detail'>
-          <div class="itinerary-preview">
-                <div class="thumbnail-row">
-                  <img class="thumbnail-photo" src="/img/location-photos/Portugal.jpg">
-                  <p class="thumbnail-intro">Portugal</p>
-                  <div class="trip-duration">10 Days</div>
-                </div>
-                <div class="trip-info">
-                  <p>Lisbon | Porto | Algarve</p>
-                </div>
-          </div>
-        </a>
-      </div>
     </div>
-
+   
     <%- include('partials/login.ejs') %>
     <%- include('partials/signup.ejs') %>
     <script src="/scripts/home.js" type="module"></script>
