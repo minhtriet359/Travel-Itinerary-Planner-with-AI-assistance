@@ -62,13 +62,19 @@ app.post("/user/new", async function(req, res) {
   let email = req.body.emailAddress;
   let password = req.body.password;
   let verifyPassword = req.body.confirmPassword;
-
+  let newsletterSignup = req.body.newsletterCheck;
+  let subscribed = 0;
+  
+  if (newsletterSignup == "on") {
+    subscribed = 1;
+  }
+  
   // generate bcrypt
   let bcryptPassword = generateBcrypt(password);
   
-  let sql = `INSERT INTO users (firstName, lastName, emailAddress, password)
-                VALUES (?, ?, ?, ? )`;
-  let params = [fName, lName, email, bcryptPassword];
+  let sql = `INSERT INTO users (firstName, lastName, emailAddress, password, subscribed)
+                VALUES (?, ?, ?, ?, ? )`;
+  let params = [fName, lName, email, bcryptPassword, subscribed];
   let rows = await executeSQL(sql, params);
 
   res.render('home');
