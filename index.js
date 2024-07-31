@@ -114,7 +114,6 @@ app.get('/loginAttempt', (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.authenticated = false;
   req.session.destroy();   // remove the session, including all variables
-  let message = "Logged Out";
   res.redirect('/loggedOut');
 });
 

@@ -19,6 +19,9 @@
   </div>
 
   <div class="website-header-right-section">
+    <% if (typeof message != "undefined") { %>
+      <%= message%>   
+    <% } %>
     <img class="user-icon" src="/img/icon/default-user-icon.png">
     <div class="dropdown-menu">
       <% if (loggedIn) { %>
@@ -29,6 +32,7 @@
         <a href="#" id="login-modal" class="dropdown-item">Log in</a>
         <a href="#" id="signup-modal" class="dropdown-item">Sign up</a>
       <% } %>
-    </div>       
+    </div>
+
   </div>
 </div>
