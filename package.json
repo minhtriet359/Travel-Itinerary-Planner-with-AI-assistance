@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/node": "^18.0.6",
     "bcrypt": "^5.1.1",
+    "data": "^0.6.1",
     "dayjs": "^1.11.12",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
