@@ -198,7 +198,6 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-<<<<<<< HEAD
 
 // API endpoint to get locations data
 app.get('/api/locations', (req, res) => {
@@ -206,8 +205,6 @@ app.get('/api/locations', (req, res) => {
 })
 
 
-=======
->>>>>>> fd8a095ae1bf6ada19cf1573235dacaf10b6da08
 //start server
 app.listen(3000, () =>{
   console.log("Expresss server running...")
