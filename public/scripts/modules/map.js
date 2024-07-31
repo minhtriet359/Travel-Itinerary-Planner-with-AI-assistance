@@ -16,6 +16,7 @@ export async function initMap(center) {
   map.addListener("dragend", ()=>{
     const newCenter=map.getCenter().toJSON();
     clearMarkers();
+    clearAllPlaceCards();
     nearbySearch(newCenter, 50000, 'restaurant');
   });
 }
@@ -161,3 +162,7 @@ function getPlaceAddress(place) {
   return address.trim();
 }
 
+//clear all place cards
+export function clearAllPlaceCards(){
+  document.querySelector('.place-list').innerHTML='';
+}

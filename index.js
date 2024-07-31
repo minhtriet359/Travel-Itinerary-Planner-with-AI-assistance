@@ -155,14 +155,6 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-
-// API endpoint to get locations data
-// import locations from 'data/locations.json';
-app.get('/api/locations', (req, res) => {
-  res.json(locations);
-})
-
-
 //start server
 app.listen(3000, () =>{
   console.log("Expresss server running...")
