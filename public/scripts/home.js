@@ -4,7 +4,7 @@ renderHeader();
 getLocations();
 
 async function getLocations() {
-  let response = await fetch('/api/locations');
+  let response = await fetch(`/api/locations/`);
   let locations = await response.json();  
   console.log(locations);
   
@@ -15,7 +15,7 @@ async function getLocations() {
     itineraryHtml += `<div class="itinerary-grid">`;
     for (let location of locations[continent]){
       itineraryHtml += 
-        `<a class="itinerary-detail-link" href='/itinerary-detail'>
+        `<a class="itinerary-detail-link" href='/itinerary-detail?id=${location.id}'>
           <div class="itinerary-preview">
             <div class="thumbnail-row">
               <img class="thumbnail-photo" src=${location.img}>

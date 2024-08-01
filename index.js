@@ -55,14 +55,40 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
 });
 
+
 app.get('/savedItineraries', isAuthenticated, (req, res) => {
   res.render('savedItineraries',{googleAPIKey})
 });
 
-//API to fetch data from front end to backend
+//API to fetch data from to backend for to front end Homepage
 app.get('/api/locations', (req, res) => {
   res.json(locations);
 });
+
+//API to fetch data from front end to backend for each locations in itinerary
+app.get('/api/itinerary/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  let locationFound = null;
+  
+  for (const continent in locations){
+    for (const location of locations[continent]) {
+      if (location.id === id) {
+        locationFound = location;
+        // return true; 
+        break;
+      }
+    } if (locationFound){      
+        // return false;
+        break;
+      }    
+  }  
+  if (locationFound) {
+    res.json(locationFound);
+  }
+  console.log(locationFound);
+});
+
 
 //process sign-up request
 app.post("/user/new", async function(req, res) {
@@ -197,13 +223,6 @@ function isAuthenticated(req, res, next) {
     res.redirect("/");
   }
 }
-
-
-// API endpoint to get locations data
-app.get('/api/locations', (req, res) => {
-  res.json(locations);
-})
-
 
 //start server
 app.listen(3000, () =>{
