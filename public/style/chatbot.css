@@ -1,0 +1,82 @@
+/* Chatbot Section */
+.chatbot {
+  display: flex; /* Use flexbox */
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  width: 60%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  height: 100%;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a sleek look */
+}
+
+.chatbot h1 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  text-align: center; /* Center text horizontally */
+  color: #333;
+  border-bottom: 2px solid #007bff; /* Adding a bottom border for emphasis */
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+#assistant-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Make the form take the full width */
+}
+
+#assistant-form .form-label {
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+#assistant-form .form-control {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+#assistant-form .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+#assistant-form .btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+#assistant-form .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+#assistant-response {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  width: 100%;
+}
+
+#assistant-response h5 {
+  margin: 10px 0;
+  color: #007bff;
+}
+
+#assistant-response p {
+  margin: 0 0 10px 0;
+  color: #333;
+}

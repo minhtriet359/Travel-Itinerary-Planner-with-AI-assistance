@@ -1,6 +1,7 @@
 let map;
 let places={};
 let markers={};
+export let types=[];
 
 //Map initialization
 export async function initMap(center) {
@@ -11,21 +12,27 @@ export async function initMap(center) {
     gestureHandling: 'greedy',
     mapId: '6a6872677ff3e032'
   });
-  nearbySearch(center, 50000, 'restaurant');
-  //Locations update as map is dragged
+  return map;
+}
+
+// Attach dragend event listener
+export function attachDragendListener(map, getTypes) {
   map.addListener("dragend", ()=>{
+    console.log('drag');
     const newCenter=map.getCenter().toJSON();
     clearMarkers();
     clearAllPlaceCards();
-    nearbySearch(newCenter, 50000, 'restaurant');
+    const types=getTypes();
+    for (let type of types){
+      nearbySearch(newCenter, 6000, type);
+    }
   });
 }
 
 //Search for nearby locations on the map based on type
 export async function nearbySearch(center,radius,type) {
-  const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary(
-    "places",
-  );
+  console.log('nearbySearch running');
+  const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
   const request = {
     // required parameters
     fields: ["displayName", "location", "businessStatus", "photos", "rating",	"svgIconMaskURI", "iconBackgroundColor", "userRatingCount", "addressComponents"],
@@ -40,17 +47,18 @@ export async function nearbySearch(center,radius,type) {
   };
   let results = await Place.searchNearby(request);
   results= results.places;
+  console.log(results);
   if (results.length) {
     // Loop through and get all the results.
     results.forEach((result) => {
-      savePlace(result, 'dining');
+      savePlace(result, type);
     });
-    addMarker('dining');
+    addMarker(type);
   } else {
-    console.log("No results");
+    console.log(type);
   }
-  updatePlaceNumber(['dining']);
-  createPlaceCard('dining');
+  updatePlaceNumber();
+  createPlaceCard(type);
 }
 
 //Add markers for all location with matching type to the map
@@ -90,26 +98,22 @@ export function savePlace(place, type){
 }
 
 //Update the total number of places displayed
-export function updatePlaceNumber(types){
-  let numArr=[];
+export function updatePlaceNumber(){
   let numPlaces=0;
-  types.forEach((type)=>{
-    numArr.push(places[type].length);
-  });
-  numArr.forEach((num)=>{
-    numPlaces+=num;
-  });
+  for (const type in places){
+    numPlaces+=places[type].length;
+  };
   if (numPlaces===1)
     document.getElementById('place-num').innerText=`${numPlaces} Place`;
   else
     document.getElementById('place-num').innerText=`${numPlaces} Places`;
 }
 
-//create and display the place card
+//create and display the place card for type 
 export function createPlaceCard(type){
   places[type].forEach((place)=>{
     const starPercentRounded=ratingCalc(place.rating);
-    const numRatings=place.userRatingCount.toLocaleString();
+    const numRatings=place.userRatingCount?place.userRatingCount.toLocaleString():'';
     let placeList=document.querySelector('.place-list');
     let placeCardHTML=
       `
@@ -127,7 +131,7 @@ export function createPlaceCard(type){
             (${numRatings})
           </div>
         </div>
-        <img class="place-img" src="${place.photos[0].getURI()}" alt="${place.displayName} photo">
+        <img class="place-img" src="${place.photos && place.photos[0] ? place.photos[0].getURI() : ""}" alt="${place.displayName} photo">
       </div>
       `;
     placeList.innerHTML+=placeCardHTML;

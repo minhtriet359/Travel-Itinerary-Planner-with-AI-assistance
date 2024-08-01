@@ -27,9 +27,6 @@ export function renderHeader(){
             dateFormat: "Y-m-d",
             minDate: "today"
         });
-
-        //use Google autosuggest to search for locations
-        const destInp = new google.maps.places.SearchBox(document.getElementById('search-destination'));
         
         // display login modal when login is clicked
         if (document.getElementById("login-modal")) {
@@ -72,6 +69,46 @@ export function renderHeader(){
         if (guests) {
             document.getElementById('add-guest').value = decodeURIComponent(guests);
         }
+
+        //use Google autosuggest to search for locations, default to the first location if none is selected
+        const destInp = new google.maps.places.SearchBox(document.getElementById('search-destination'));
+        let selectedPlace = null;
+        // Listen for the event fired when the user selects a prediction
+        destInp.addListener('places_changed', () => {
+            const places = destInp.getPlaces();
+            if (places.length === 0) {
+                return;
+            }
+            selectedPlace = places[0]; // The user selected this place
+        });
+
+        //handle search button click
+        document.querySelector('.search-button').addEventListener('click',()=>{
+            const destination=document.getElementById('search-destination');
+            const startDate=document.getElementById('start-date');
+            const endDate=document.getElementById('end-date');
+            const guests=document.getElementById('add-guest');
+            //input validation
+            if(!destination.value || !startDate.value || !endDate.value || !guests.value){
+                return;
+            }
+            // If no place is selected, select the first suggestion
+            if (!selectedPlace) {
+                const places = destInp.getPlaces();
+                if (places && places.length > 0) {
+                    selectedPlace = places[0];
+                    destination.value = selectedPlace.name;
+                }
+            }
+            // Shows an alert if destination is not valid
+            if (!selectedPlace) {
+                alert('Please select a valid destination');
+                return;
+            }
+            // Redirect to the itinerary page with query parameters
+            window.location.href = `/itinerary-detail?destination=${encodeURIComponent(destination.value.trim())}&startDate=${encodeURIComponent(startDate.value)}&endDate=${encodeURIComponent(endDate.value)}&guests=${encodeURIComponent(guests.value.trim())}`;
+            //Maintain input values
+        });
     });
 
     //highlight the focused input by changing background color
@@ -93,20 +130,5 @@ export function renderHeader(){
                 inp.classList.remove('unfocused');
             });
         })
-    });
-
-    //handle search button click
-    document.querySelector('.search-button').addEventListener('click',()=>{
-        const destination=document.getElementById('search-destination');
-        const startDate=document.getElementById('start-date');
-        const endDate=document.getElementById('end-date');
-        const guests=document.getElementById('add-guest');
-        //input validation
-        if(!destination.value || !startDate.value || !endDate.value || !guests.value){
-            return;
-        }
-        // Redirect to the itinerary page with query parameters
-        window.location.href = `/itinerary-detail?destination=${encodeURIComponent(destination.value.trim())}&startDate=${encodeURIComponent(startDate.value)}&endDate=${encodeURIComponent(endDate.value)}&guests=${encodeURIComponent(guests.value.trim())}`;
-        //Maintain input values
     });
 }
