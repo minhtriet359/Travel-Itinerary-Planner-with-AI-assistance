@@ -26,7 +26,7 @@ app.use(session({
 
 const googleAPIKey = process.env['google_API_key'];
 
-//Initialize OpenAI configuration
+// Initialize OpenAI configuration
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is also the default, can be omitted
 });
@@ -67,66 +67,72 @@ app.get('/api/locations', (req, res) => {
 app.post("/user/new", async function(req, res) {
   let fName = req.body.firstName;
   let lName = req.body.lastName;
-  let email = req.body.emailAddress;
+  let email = req.body.emailAddress.toLowerCase();
   let password = req.body.password;
   let verifyPassword = req.body.confirmPassword;
   let newsletterSignup = req.body.newsletterCheck;
   let subscribed = 0;
-  
-  if (newsletterSignup == "on") {
-    subscribed = 1;
-  }
-  
-  // generate bcrypt
-  let bcryptPassword = generateBcrypt(password);
-  
-  let sql = `INSERT INTO users (firstName, lastName, emailAddress, password, subscribed)
-                VALUES (?, ?, ?, ?, ? )`;
-  let params = [fName, lName, email, bcryptPassword, subscribed];
-  let rows = await executeSQL(sql, params);
+  let message = "";
 
-  res.render('home');
+  // verify passwords match
+  if (password == verifyPassword) {
+    // verify email address does not already exist in database
+    let sql = `SELECT * FROM users WHERE emailAddress = ?`;
+    let data = await executeSQL(sql, [email]);
+    if (data.length > 0) {
+      message = "A user with that email address already exists! ";
+    } else {
+      if (newsletterSignup == "on") {
+        subscribed = 1;
+      }
+      // generate bcrypted password
+      let bcryptPassword = generateBcrypt(password);
+      let sql = `INSERT INTO users (firstName, lastName, emailAddress, password, subscribed)
+                    VALUES (?, ?, ?, ?, ? )`;
+      let params = [fName, lName, email, bcryptPassword, subscribed];
+      await executeSQL(sql, params);
+      message = "Sign up successful! Please sign in. ";
+    }
+  } else {
+    message = "Passwords do not match! Please try again. ";
+  }
+  res.render('home', {message:message});
 });
 
 // process login request
 app.post("/user/login", async function(req, res) {
-  let email = req.body.emailAddress;
+  let email = req.body.emailAddress.toLowerCase();
   let password = req.body.password;
-  let message = "";
-  
   let passwordHash = "";
+  let message = "";
+
+  console.log(email);
   
   let sql = `SELECT * FROM users WHERE emailAddress = ?`;
   let data = await executeSQL(sql, [email]);
 
+  // verify username with that email address exists
   if (data.length > 0) {
     passwordHash = data[0].password;
-  } else {
-    message = "Invalid Email";
-  }
-  const matchPassword = await bcrypt.compare(password, passwordHash);
-  console.log(matchPassword);
-  if (matchPassword) {
-    console.log("correct login");
-    req.session.authenticated = true;
-    res.locals.loggedIn = await req.session.authenticated;
-    req.session.userId = data[0].firstName + " " + data[0].lastName;
-    console.log(req.session.userId);
-  } else {
-    console.log("Incorrect login");
-  }
-  res.redirect('/loginAttempt');
-});
+    const matchPassword = await bcrypt.compare(password, passwordHash);
+    console.log(matchPassword);
 
-app.get('/loginAttempt', (req, res) => {
-  let message = "";
-  if (req.session.authenticated) {
-    message = `Welcome back, ${req.session.userId}!`;
+    // verify correct password
+    if (matchPassword) {
+      req.session.authenticated = true;
+      res.locals.loggedIn = await req.session.authenticated;
+      req.session.userId = data[0].firstName + " " + data[0].lastName;
+      console.log(req.session.userId);
+      message = `Welcome back, ${req.session.userId}! `;
+    } else {
+      message = "Incorrect Password  ";
+    }
   } else {
-    message = "Invalid Credentials";
+    message = "Email address not found  ";
   }
   res.render('home', {message:message});
 });
+
 
 // log out
 app.get('/logout', isAuthenticated, (req, res) => {
@@ -190,7 +196,7 @@ function generateBcrypt(plainTextPassword) {
 // middleware function for verifying user has been authenticated 
 function isAuthenticated(req, res, next) {
   if (req.session.authenticated) {
-    console.log(user);
+    console.log(req.session.userId);
     next();
   } else {
     res.redirect("/");
