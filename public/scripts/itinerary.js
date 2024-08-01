@@ -11,43 +11,64 @@ const PLACE_TYPES = {
 };
 const inputValues = ["destination", "startDate", "endDate", "guests"];
 
-renderHeader();
-renderItinerayDetailPage();
+const types=Object.values(PLACE_TYPES);
 
-async function renderItinerayDetailPage() {
-  const destination = getInpFromUrl(PLACE_TYPES.dining);
+
+renderHeader();
+initializeMap();
+
+
+async function initializeMap() {
+  const destination = getInpFromUrl(inputValues[0]);
 
   if (destination) {
     try {
       const { lat, lng } = await getLatLngFromAddress(destination);
-      map.initMap({ lat, lng });
+      await initAndSetupMap({ lat, lng });
     } catch (error) {
-      map.initMap({ lat: 61.2181, lng: -149.9003 }); //default location
+      console.log(error);
+      //default location
+      await initAndSetupMap({ lat: 61.2181, lng: -149.9003});
     }
   } else {
-    map.initMap({ lat: 61.2181, lng: -149.9003 }); //default location
+    await initAndSetupMap({ lat: 61.2181, lng: -149.9003});
   }
 
-  // Function to get query parameter values by name
-  function getInpFromUrl(name) {
-    return decodeURIComponent(
-      new URLSearchParams(window.location.search).get(name),
-    );
+async function initAndSetupMap(center){
+  const gmap= await map.initMap(center);
+  for (let type of types){
+    map.nearbySearch(gmap.center, 6000, type);
   }
+  // Attach dragend event listener
+  map.attachDragendListener(gmap, getTypes);
+}
 
-  async function getLatLngFromAddress(address) {
-    const geocoder = new google.maps.Geocoder();
-    return new Promise((resolve, reject) => {
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          const { lat, lng } = results[0].geometry.location;
-          resolve({ lat: lat(), lng: lng() });
-        } else {
-          reject(
-            "Geocode was not successful for the following reason: " + status,
-          );
-        }
-      });
+// Function to get query parameter values by name
+function getInpFromUrl(name) {
+  return decodeURIComponent(
+    new URLSearchParams(window.location.search).get(name),
+  );
+}
+
+//Function to get lat and lng from address
+async function getLatLngFromAddress(address) {
+  const geocoder = new google.maps.Geocoder();
+  return new Promise((resolve, reject) => {
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const { lat, lng } = results[0].geometry.location;
+        resolve({ lat: lat(), lng: lng() });
+      } else {
+        reject(
+          "Geocode was not successful for the following reason: " + status,
+        );
+      }
     });
-  }
+  });
+}
+}
+
+//Function to get current types
+function getTypes(){
+  return types;
 }
