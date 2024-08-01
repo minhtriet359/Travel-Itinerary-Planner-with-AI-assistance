@@ -15,7 +15,7 @@ async function getLocations() {
     itineraryHtml += `<div class="itinerary-grid">`;
     for (let location of locations[continent]){
       itineraryHtml += 
-        `<a class="itinerary-detail-link" href='/itinerary-detail?id=${location.id}'>
+        `<a class="itinerary-detail-link" href='/itinerary-detail?id=${location.id}&$place=${location.place}'>
           <div class="itinerary-preview">
             <div class="thumbnail-row">
               <img class="thumbnail-photo" src=${location.img}>
