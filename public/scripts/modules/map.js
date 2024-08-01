@@ -3,6 +3,7 @@ let places={};
 let markers={};
 export let types=[];
 
+
 //Map initialization
 export async function initMap(center) {
   const { Map } = await google.maps.importLibrary("maps");
@@ -109,15 +110,65 @@ export function updatePlaceNumber(){
     document.getElementById('place-num').innerText=`${numPlaces} Places`;
 }
 
+// Event listeners
+function addCardEventListeners() {
+  // array with all place cards
+  let allPlaces = document.querySelectorAll(".place-card"); 
+  
+  // add event listener for each place card
+  for(let i = 0; i < allPlaces.length; i++) {
+    allPlaces[i].addEventListener("click", addToItinerary);
+  }
+
+  // create an array with all of the add buttons
+  // let allAddButtons = document.querySelectorAll(".addToItinerary");
+
+  // // add on event listener for each button
+  // for(let i = 0; i < allAddButtons.length; i++) {
+  //   allAddButtons[i].addEventListener("click", displayLocation);
+  // }
+}
+
+// add clicked place to Itinerary
+function addToItinerary() {
+  var service = new google.maps.places.PlacesService(map);
+  // Define the place ID
+  var placeId = this.id;
+  //console.log(this.id);
+
+  service.getDetails({ placeId: placeId }, function (place, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      // Successfully fetched place details
+      console.log('Place details:', place);
+      let savedPlaceList=document.querySelector('.saved-place-list');
+      let savedPlaceCardHTML=
+        `
+        <div class="saved-place-card" id="${place.id}">
+          <div class="saved-place-content">
+            <p class="place-name">${place.name}</p>
+            <p class="place-address">${place.formatted_address}</p>
+          </div>
+        </div>
+        `;
+      savedPlaceList.innerHTML+=savedPlaceCardHTML;
+    } else {
+      // Handle errors
+      console.error('Error getting place details');
+    }
+  })
+}
+
 //create and display the place card for type 
 export function createPlaceCard(type){
   places[type].forEach((place)=>{
+    // console.log(place.id);
     const starPercentRounded=ratingCalc(place.rating);
     const numRatings=place.userRatingCount?place.userRatingCount.toLocaleString():'';
     let placeList=document.querySelector('.place-list');
     let placeCardHTML=
       `
       <div class="place-card" id="${place.id}">
+        <button class="addToItinerary"> &#43 </button>
         <div class="place-content">
           <div class="icon icon-${type}">
             <i class="material-icons">local_${type}</i>
@@ -128,7 +179,7 @@ export function createPlaceCard(type){
             <div class="stars-outer">
               <div class="stars-inner" style="width:${starPercentRounded}"></div>
             </div>
-            (${numRatings})
+            (${numRatings}) 
           </div>
         </div>
         <img class="place-img" src="${place.photos && place.photos[0] ? place.photos[0].getURI() : ""}" alt="${place.displayName} photo">
@@ -136,7 +187,9 @@ export function createPlaceCard(type){
       `;
     placeList.innerHTML+=placeCardHTML;
   });
+  addCardEventListeners();
 }
+
 
 function ratingCalc(rating) {
   const starPercentage = (rating / 5) * 100;
