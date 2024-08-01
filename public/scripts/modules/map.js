@@ -11,21 +11,19 @@ export async function initMap(center) {
     gestureHandling: 'greedy',
     mapId: '6a6872677ff3e032'
   });
-  nearbySearch(center, 50000, 'restaurant');
+  nearbySearch(center, 6000, 'restaurant');
   //Locations update as map is dragged
   map.addListener("dragend", ()=>{
     const newCenter=map.getCenter().toJSON();
     clearMarkers();
     clearAllPlaceCards();
-    nearbySearch(newCenter, 50000, 'restaurant');
+    nearbySearch(newCenter, 6000, 'restaurant');
   });
 }
 
 //Search for nearby locations on the map based on type
 export async function nearbySearch(center,radius,type) {
-  const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary(
-    "places",
-  );
+  const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
   const request = {
     // required parameters
     fields: ["displayName", "location", "businessStatus", "photos", "rating",	"svgIconMaskURI", "iconBackgroundColor", "userRatingCount", "addressComponents"],
@@ -35,7 +33,7 @@ export async function nearbySearch(center,radius,type) {
     },
     // optional parameters
     includedPrimaryTypes: [type],
-    maxResultCount: 15,
+    maxResultCount: 20,
     rankPreference: SearchNearbyRankPreference.POPULARITY,
   };
   let results = await Place.searchNearby(request);
@@ -109,7 +107,7 @@ export function updatePlaceNumber(types){
 export function createPlaceCard(type){
   places[type].forEach((place)=>{
     const starPercentRounded=ratingCalc(place.rating);
-    const numRatings=place.userRatingCount.toLocaleString();
+    const numRatings=place.userRatingCount?place.userRatingCount.toLocaleString():'';
     let placeList=document.querySelector('.place-list');
     let placeCardHTML=
       `
@@ -127,7 +125,7 @@ export function createPlaceCard(type){
             (${numRatings})
           </div>
         </div>
-        <img class="place-img" src="${place.photos[0].getURI()}" alt="${place.displayName} photo">
+        <img class="place-img" src="${place.photos && place.photos[0] ? place.photos[0].getURI() : ''}" alt="${place.displayName} photo">
       </div>
       `;
     placeList.innerHTML+=placeCardHTML;

@@ -24,7 +24,7 @@ app.use(session({
   cookie: { secure: true }
 }));
 
-const googleAPIKey = process.env['google_API_key'];
+const googleAPIKey = process.env.google_API_key;
 
 // Initialize OpenAI configuration
 const openai = new OpenAI({
