@@ -22,9 +22,21 @@
   }
 }
 
-@media(min-width: 1000px){
+@media(min-width: 1000px) and (max-width: 1799px){
   .itinerary-grid{
     grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+@media(min-width: 1800px) and (max-width: 2699px){
+  .itinerary-grid{
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+
+@media(min-width: 2700px){
+  .itinerary-grid{
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   }
 }
 

@@ -1,8 +1,5 @@
-import { renderHeader } from './shared/header.js';
-import * as map from './modules/map.js';
-
-renderHeader();
-renderItinerayDetailPage();
+import { renderHeader } from "./shared/header.js";
+import * as map from "./modules/map.js";
 
 const PLACE_TYPES = {
   see: "tourist_attraction",
@@ -12,40 +9,45 @@ const PLACE_TYPES = {
   hotel: "lodging",
   mall: "shopping_mall",
 };
-const inputValues = ['destination', 'startDate', 'endDate', 'guests'];
+const inputValues = ["destination", "startDate", "endDate", "guests"];
 
-async function renderItinerayDetailPage(){
-  const destination=getInpFromUrl('destination');
-  
-  if(destination){
-    try{
-      const {lat,lng} = await getLatLngFromAddress(destination);
-      map.initMap({lat,lng})
-    }catch(error){
+renderHeader();
+renderItinerayDetailPage();
+
+async function renderItinerayDetailPage() {
+  const destination = getInpFromUrl(PLACE_TYPES.dining);
+
+  if (destination) {
+    try {
+      const { lat, lng } = await getLatLngFromAddress(destination);
+      map.initMap({ lat, lng });
+    } catch (error) {
       map.initMap({ lat: 61.2181, lng: -149.9003 }); //default location
     }
-  }else{
-     map.initMap({ lat: 61.2181, lng: -149.9003 }); //default location
+  } else {
+    map.initMap({ lat: 61.2181, lng: -149.9003 }); //default location
   }
 
-  
   // Function to get query parameter values by name
   function getInpFromUrl(name) {
-      return decodeURIComponent(new URLSearchParams(window.location.search).get(name));
+    return decodeURIComponent(
+      new URLSearchParams(window.location.search).get(name),
+    );
   }
 
   async function getLatLngFromAddress(address) {
     const geocoder = new google.maps.Geocoder();
     return new Promise((resolve, reject) => {
       geocoder.geocode({ address }, (results, status) => {
-        if (status === 'OK' && results[0]) {
+        if (status === "OK" && results[0]) {
           const { lat, lng } = results[0].geometry.location;
           resolve({ lat: lat(), lng: lng() });
         } else {
-          reject('Geocode was not successful for the following reason: ' + status);
+          reject(
+            "Geocode was not successful for the following reason: " + status,
+          );
         }
       });
     });
   }
 }
-

@@ -41,14 +41,14 @@ export async function nearbySearch(center,radius,type) {
   if (results.length) {
     // Loop through and get all the results.
     results.forEach((result) => {
-      savePlace(result, 'dining');
+      savePlace(result, type);
     });
-    addMarker('dining');
+    addMarker(type);
   } else {
-    console.log("No results");
+    console.log(type);
   }
-  updatePlaceNumber(['dining']);
-  createPlaceCard('dining');
+  updatePlaceNumber([type]);
+  createPlaceCard(type);
 }
 
 //Add markers for all location with matching type to the map
@@ -103,7 +103,7 @@ export function updatePlaceNumber(types){
     document.getElementById('place-num').innerText=`${numPlaces} Places`;
 }
 
-//create and display the place card
+//create and display the place card for type 
 export function createPlaceCard(type){
   places[type].forEach((place)=>{
     const starPercentRounded=ratingCalc(place.rating);

@@ -96,7 +96,7 @@ app.post("/user/new", async function(req, res) {
   } else {
     message = "Passwords do not match! Please try again. ";
   }
-  res.render('home', {message:message});
+  res.render('home', {message, googleAPIKey});
 });
 
 // process login request
@@ -130,7 +130,7 @@ app.post("/user/login", async function(req, res) {
   } else {
     message = "Email address not found  ";
   }
-  res.render('home', {message:message});
+  res.render('home', {message, googleAPIKey});
 });
 
 
@@ -148,7 +148,7 @@ app.get('/loggedOut', (req, res) => {
   } else {
     message = "Error Logging Out";
   }
-  res.render('home', {message:message});
+  res.render('home', {message, googleAPIKey});
 })
 
 //Chatbot
