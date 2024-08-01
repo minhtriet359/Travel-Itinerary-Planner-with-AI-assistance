@@ -65,31 +65,6 @@ app.get('/api/locations', (req, res) => {
   res.json(locations);
 });
 
-//API to fetch data from front end to backend for each locations in itinerary
-app.get('/api/itinerary/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
-
-  let locationFound = null;
-  
-  for (const continent in locations){
-    for (const location of locations[continent]) {
-      if (location.id === id) {
-        locationFound = location;
-        // return true; 
-        break;
-      }
-    } if (locationFound){      
-        // return false;
-        break;
-      }    
-  }  
-  if (locationFound) {
-    res.json(locationFound);
-  }
-  console.log(locationFound);
-});
-
-
 //process sign-up request
 app.post("/user/new", async function(req, res) {
   let fName = req.body.firstName;

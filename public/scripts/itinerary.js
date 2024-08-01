@@ -18,25 +18,58 @@ renderHeader();
 initializeMap();
 
 const id = new URLSearchParams(window.location.search).get('id');
+const place = new URLSearchParams(window.location.search).get('place');
 console.log('Clicked itinerary link with ID:', id);
-await displayItineraryInfo(id);
+await displayItineraryInfo(id, place);
 
-async function displayItineraryInfo(id){
-  let response = await fetch(`/api/itinerary/${id}`);
+async function displayItineraryInfo(id, place){
+  let response = await fetch(`/api/locations`);
   let itinerary = await response.json();  
   console.log(itinerary);
 
+  // let location = itinerary[place];
+  // console.log(location);
+  let locationsArray = flattenLocations(itinerary);
+  let placeData = findByPlaceId(locationsArray, place, id);
+  console.log(placeData);
+
   const itineraryHtml = `
-          <h1>${itinerary.place}</h1>
-          <img src="${itinerary.img}" alt="${itinerary.place}">
-          <p>${itinerary.details}</p>
-          <p><strong>Duration:</strong> ${itinerary.duration}</p>
+          <h1>${placeData.place}</h1>
+          <img src="${placeData.img}" alt="${placeData.place}">
+          <p>${placeData.details}</p>
+          <p><strong>Duration:</strong> ${placeData.duration}</p>
           <h2>Cities:</h2>
-          <p>${itinerary.city.join(', ')}</p>
+          <p>${placeData.city.join(', ')}</p>
   `;
-  
+
   document.querySelector('.itinerary-details').innerHTML = itineraryHtml;
   }
+
+function flattenLocations(locations){
+    let results = [];
+    for (let key in locations){
+        let location = locations[key];
+        for (let place of location){
+            results.push(place);
+        }
+    }
+    console.log(results);
+    return results;
+}
+
+function findByPlaceId(array, place, id){
+    console.log(array, place, id);
+    let result = null;
+    for (let item of array){
+        console.log(item);
+        if (item.place === place) {
+            result = item;
+            break;
+        }
+    }
+    return result;
+}
+
 
 async function initializeMap() {
   const destination = getInpFromUrl(inputValues[0]);
