@@ -20,10 +20,10 @@ initializeMap();
 /* ******** MAP CONTROLLER ******** */
 async function initializeMap() {
   const destination = getInpFromUrl(inputValues[0]);
-
   if (destination) {
     try {
       const { lat, lng } = await getLatLngFromAddress(destination);
+      console.log('here1');
       await initAndSetupMap({ lat, lng });
     } catch (error) {
       console.log(error);
@@ -31,6 +31,7 @@ async function initializeMap() {
       await initAndSetupMap({ lat: 61.2181, lng: -149.9003});
     }
   } else {
+    console.log('here2');
     await initAndSetupMap({ lat: 61.2181, lng: -149.9003});
   }
 
@@ -38,7 +39,7 @@ async function initAndSetupMap(center){
   const gmap= await map.initMap(center);
   for (let type of types){
     const results=await map.nearbySearch(gmap.center, 6000, PLACE_TYPES[type]);
-    results.forEach((result)=>map.savePlace(result,type))
+    if(results){results.forEach((result)=>map.savePlace(result,type));}; 
     map.addMarker(type);
     map.createPlaceCard(type);
   }
