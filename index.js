@@ -35,6 +35,7 @@ const openai = new OpenAI({
 const locationsPath = path.join(__dirname, 'data', 'locations.json');
 const locations = require(locationsPath);
 
+
 //add express middleware to parse form data
 app.use(express.urlencoded({extended: true}));
 
@@ -54,11 +55,12 @@ app.get('/itinerary-detail', (req, res) => {
   res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
 });
 
+
 app.get('/savedItineraries', isAuthenticated, (req, res) => {
   res.render('savedItineraries',{googleAPIKey})
 });
 
-//API to fetch data from front end to backend
+//API to fetch data from to backend for to front end Homepage
 app.get('/api/locations', (req, res) => {
   res.json(locations);
 });
