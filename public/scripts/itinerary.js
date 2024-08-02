@@ -11,13 +11,13 @@ const PLACE_TYPES = {
 };
 const inputValues = ["destination", "startDate", "endDate", "guests"];
 
-const types=Object.values(PLACE_TYPES);
+let types=Object.keys(PLACE_TYPES);
 
 
 renderHeader();
 initializeMap();
 
-
+/* ******** MAP CONTROLLER ******** */
 async function initializeMap() {
   const destination = getInpFromUrl(inputValues[0]);
 
@@ -37,8 +37,12 @@ async function initializeMap() {
 async function initAndSetupMap(center){
   const gmap= await map.initMap(center);
   for (let type of types){
-    map.nearbySearch(gmap.center, 6000, type);
+    const results=await map.nearbySearch(gmap.center, 6000, PLACE_TYPES[type]);
+    results.forEach((result)=>map.savePlace(result,type))
+    map.addMarker(type);
+    map.createPlaceCard(type);
   }
+  map.updatePlaceNumber(types);
   // Attach dragend event listener
   map.attachDragendListener(gmap, getTypes);
 }
@@ -71,4 +75,56 @@ async function getLatLngFromAddress(address) {
 //Function to get current types
 function getTypes(){
   return types;
+}
+
+/* ******** FILTER BUTTONS CONTROLLER ******** */
+document.querySelector(".place-detail-grid").addEventListener('click', (element)=>{
+  if(element.target.closest('.filter-buttons')){
+    selectPlaceFilters(element);
+  }
+  if(element.target.closest('#filter-actions')){
+    applyFilterAction(element);
+  }
+});
+
+
+function selectPlaceFilters(element){
+  const filterLi = element.target.closest(".filter-li");
+  if (filterLi) {
+    const linkElement = filterLi.querySelector('a');
+    if (linkElement) {
+      linkElement.classList.toggle("selected");
+    }
+  }
+};
+
+function applyFilterAction(element){
+  const applyAction = element.target.closest("#apply-filter");
+  const clearAction = element.target.closest("#clear-filter");
+  if (!applyAction && !clearAction) return;
+  if (clearAction) {
+    clearFilter();
+  }
+  updateType();
+  map.clearMarkers();
+  types.forEach((type) => map.addMarker(type));
+  map.clearAllPlaceCards();
+  types.forEach((type) => map.createPlaceCard(type));
+  map.updatePlaceNumber(types);
+}
+
+function clearFilter(){
+  console.log
+  document.querySelectorAll(".selected").forEach((action)=>{
+    action.classList.remove("selected");
+  });
+};
+
+function updateType(){
+  const selectedElems=Array.from(document.querySelectorAll(".selected"));
+  if(selectedElems.length===0){
+    types=Object.keys(PLACE_TYPES);
+  }else{
+    types=selectedElems.map((element)=>element.parentNode.id);
+  }
 }
