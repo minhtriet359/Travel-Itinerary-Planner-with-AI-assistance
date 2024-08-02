@@ -17,12 +17,14 @@ const types=Object.values(PLACE_TYPES);
 renderHeader();
 initializeMap();
 
-const id = new URLSearchParams(window.location.search).get('id');
-const place = new URLSearchParams(window.location.search).get('place');
-console.log('Clicked itinerary link with ID:', id);
-await displayItineraryInfo(id, place);
+const destination = new URLSearchParams(window.location.search).get('destination');
 
-async function displayItineraryInfo(id, place){
+const place = destination.split(',')[1];
+const city = destination.split(',')[0];
+console.log('Clicked itinerary link with destination:', destination, city, place);
+await displayItineraryInfo(city, place);
+
+async function displayItineraryInfo(city, place){
   let response = await fetch(`/api/locations`);
   let itinerary = await response.json();  
   console.log(itinerary);
@@ -30,7 +32,7 @@ async function displayItineraryInfo(id, place){
   // let location = itinerary[place];
   // console.log(location);
   let locationsArray = flattenLocations(itinerary);
-  let placeData = findByPlaceId(locationsArray, place, id);
+  let placeData = findByPlaceCity(locationsArray, place, city);
   console.log(placeData);
 
   const itineraryHtml = `
@@ -57,12 +59,12 @@ function flattenLocations(locations){
     return results;
 }
 
-function findByPlaceId(array, place, id){
-    console.log(array, place, id);
+function findByPlaceCity(array, place, city){
+    console.log(array, place, city);
     let result = null;
     for (let item of array){
         console.log(item);
-        if (item.place === place) {
+        if (item.place === place && item.city.includes(city)) {
             result = item;
             break;
         }
