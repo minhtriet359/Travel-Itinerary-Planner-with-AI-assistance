@@ -155,7 +155,8 @@ app.get('/loggedOut', (req, res) => {
 
 //Chatbot
 app.get('/chatbot', (req, res) => {
-  res.render('chatbot', { googleAPIKey: googleAPIKey});
+   const { destination } = req.query;
+  res.render('chatbot', { googleAPIKey, destination});
 });
 
 app.post('/chatbot-response', async (req, res) => {

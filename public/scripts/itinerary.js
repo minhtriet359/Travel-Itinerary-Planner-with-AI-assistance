@@ -17,12 +17,11 @@ renderHeader();
 initializeMap();
 
 
-const destination = new URLSearchParams(window.location.search).get('destination');
-
-const place = destination.split(',')[1];
-const city = destination.split(',')[0];
-console.log('Clicked itinerary link with destination:', destination, city, place);
-await displayItineraryInfo(city, place);
+//const destination = getInpFromUrl(inputValues[0]);
+//const place = destination.split(',')[1];
+//const city = destination.split(',')[0];
+//console.log('Clicked itinerary link with destination:', destination, city, place);
+//await displayItineraryInfo(city, place);
 
 async function displayItineraryInfo(city, place){
   let response = await fetch(`/api/locations`);
@@ -77,8 +76,7 @@ async function initializeMap() {
   const destination = getInpFromUrl(inputValues[0]);
   if (destination) {
     try {
-      const { lat, lng } = await getLatLngFromAddress(destination);
-      console.log("here1");
+      const { lat, lng } = await map.getLatLngFromAddress(destination);
       await initAndSetupMap({ lat, lng });
     } catch (error) {
       console.log(error);
@@ -86,106 +84,27 @@ async function initializeMap() {
       await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
     }
   } else {
-    console.log("here2");
     await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
   }
+}
 
-  async function initAndSetupMap(center) {
-    const gmap = await map.initMap(center);
-    for (let type of types) {
-      const results = await map.nearbySearch(
-        gmap.center,
-        6000,
-        PLACE_TYPES[type],
-      );
-      if (results) {
-        results.forEach((result) => map.savePlace(result, type));
-      }
-      map.addMarker(type);
-      map.createPlaceCard(type);
-    }
-    map.updatePlaceNumber(types);
-    // Attach dragend event listener
-    map.attachDragendListener(gmap, getTypes);
-  }
-
-  // Function to get query parameter values by name
-  function getInpFromUrl(name) {
-    return decodeURIComponent(
-      new URLSearchParams(window.location.search).get(name),
+async function initAndSetupMap(center) {
+  const gmap = await map.initMap(center);
+  for (let type of types) {
+    const results = await map.nearbySearch(
+      gmap.center,
+      6000,
+      PLACE_TYPES[type],
     );
-  }
-
-  const startDate = getInpFromUrl(inputValues[1]);
-  const endDate = getInpFromUrl(inputValues[2]);
-  const startDateObj = new Date(startDate);
-  const endDateObj = new Date(endDate);
- 
-
-  // Array of days of the week
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
-  function getDaysOfWeek(startDateObj, endDateObj) {
-    const days = [];
-    let currentDate = new Date(startDateObj);
-    while (currentDate <= endDateObj) {
-      // Get the day of the week for the current date
-      const dayOfWeek = daysOfWeek[currentDate.getDay()];
-      // Add the day to the array
-      days.push(dayOfWeek);
-      // Increment the date by one day
-      currentDate.setDate(currentDate.getDate() + 1);
+    if (results) {
+      results.forEach((result) => map.savePlace(result, type));
     }
-    return days;
+    map.addMarker(type);
+    map.createPlaceCard(type);
   }
-  // Get the days of the week
-  const allDays = getDaysOfWeek(startDateObj, endDateObj);
-  // Display the days
-  console.log("Days of the week between start and end date:");
-  console.log(allDays);
-
-
-  // Assign days of the week as headers
-  const itineraryDetailGrid = document.querySelector(".itinerary-detail-grid");
-  itineraryDetailGrid.innerHTML = allDays
-    .map(
-      (day, index) =>
-        `<h4 id="${startDateObj.getFullYear()}-${
-          startDateObj.getMonth() + 1 < 10
-            ? `0${startDateObj.getMonth() + 1}`
-            : startDateObj.getMonth() + 1
-        }-${
-          startDateObj.getDate() + index + 1 < 10
-            ? `0${startDateObj.getDate() + index + 1}`
-            : startDateObj.getDate() + index + 1
-        }">${day}</h4>`,
-    )
-    .join("");
-
-  //Function to get lat and lng from address
-  async function getLatLngFromAddress(address) {
-    const geocoder = new google.maps.Geocoder();
-    return new Promise((resolve, reject) => {
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          const { lat, lng } = results[0].geometry.location;
-          resolve({ lat: lat(), lng: lng() });
-        } else {
-          reject(
-            "Geocode was not successful for the following reason: " + status,
-          );
-        }
-      });
-    });
-  }
+  map.updatePlaceNumber(types);
+  // Attach dragend event listener
+  map.attachDragendListener(gmap, getTypes);
 }
 
 //Function to get current types
@@ -193,6 +112,66 @@ function getTypes() {
   return types;
 }
 
+// Function to get query parameter values by name
+function getInpFromUrl(name) {
+  return decodeURIComponent(
+    new URLSearchParams(window.location.search).get(name),
+  );
+}
+  
+/* ******** ITINERARY DETAIL SECTION ******** */
+const startDate = getInpFromUrl(inputValues[1]);
+const endDate = getInpFromUrl(inputValues[2]);
+const startDateObj = new Date(startDate);
+const endDateObj = new Date(endDate);
+
+// Array of days of the week
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+function getDaysOfWeek(startDateObj, endDateObj) {
+  const days = [];
+  let currentDate = new Date(startDateObj);
+  while (currentDate <= endDateObj) {
+    // Get the day of the week for the current date
+    const dayOfWeek = daysOfWeek[currentDate.getDay()];
+    // Add the day to the array
+    days.push(dayOfWeek);
+    // Increment the date by one day
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return days;
+}
+// Get the days of the week
+const allDays = getDaysOfWeek(startDateObj, endDateObj);
+// Display the days
+console.log("Days of the week between start and end date:");
+console.log(allDays);
+
+
+// Assign days of the week as headers
+const itineraryDetailGrid = document.querySelector(".itinerary-detail-grid");
+itineraryDetailGrid.innerHTML = allDays
+  .map(
+    (day, index) =>
+      `<h4 id="${startDateObj.getFullYear()}-${
+        startDateObj.getMonth() + 1 < 10
+          ? `0${startDateObj.getMonth() + 1}`
+          : startDateObj.getMonth() + 1
+      }-${
+        startDateObj.getDate() + index + 1 < 10
+          ? `0${startDateObj.getDate() + index + 1}`
+          : startDateObj.getDate() + index + 1
+      }">${day}</h4>`,
+  )
+  .join("");
 
 /* ******** FILTER BUTTONS CONTROLLER ******** */
 document
@@ -213,6 +192,7 @@ function selectPlaceFilters(element) {
     if (linkElement) {
       linkElement.classList.toggle("selected");
     }
+    console.log(linkElement)
   }
 }
 
@@ -246,3 +226,9 @@ function updateType() {
     types = selectedElems.map((element) => element.parentNode.id);
   }
 }
+
+/* ******** CHATBOT REDIRECT ******** */
+document.getElementById('assitant-button').addEventListener('click',()=>{
+  const destination = getInpFromUrl(inputValues[0]);
+  window.location.href=`/chatbot?destination=${encodeURIComponent(destination)}`;
+});

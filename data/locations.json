@@ -3,7 +3,7 @@
     {
       "id": 1, 
       "place": "Alaska", 
-      "duration": "10 Days", 
+      "duration": "5 Days", 
       "img": "/img/location-photos/Alaska.jpg", 
       "city": ["Anchorage", "Kenai Fjords", "Denali"],
       "details": "Discover the breathtaking beauty of Alaska, the largest state in the U.S.! From stunning glaciers and majestic mountains to vibrant wildlife and rich Native culture, Alaska offers endless adventures for nature lovers and thrill-seekers alike. Explore its pristine wilderness, embark on a thrilling cruise, or experience the magic of the Northern Lights. Your Alaskan adventure awaits!"
@@ -11,17 +11,24 @@
     {
       "id": 2, 
       "place": "California", 
-      "duration": "7-10 Days", 
+      "duration": "4 Days", 
       "img": "/img/location-photos/California.jpg", 
-      "city": ["SF", "Monterey", "LA", "San Diego"],
+      "city": ["SF", "Monterey", "LA"],
       "details": "Experience the Golden State, where adventure meets diversity! From the stunning beaches of Southern California to the iconic landscapes of the Northern Coast, California offers something for everyone. Explore the vibrant culture of San Francisco, soak up the sun in Los Angeles, or wander through the breathtaking national parks like Yosemite and Sequoia. Indulge in world-class cuisine, wine country delights, and unforgettable entertainment. "
+    },
+    {
+      "place": "Canada",
+      "duration": "6 Days",
+      "img": "/img/location-photos/Canada.jpg",
+      "city": ["Toronto", "Banff National Park", "Vancouver"],
+      "details": "Embark on a 6-day adventure to Canada, a land of diverse landscapes and vibrant cities! Start in Toronto, where you can visit the iconic CN Tower and explore the bustling waterfront. Next, head to Montreal to experience the unique blend of French and English cultures, and enjoy its renowned culinary scene. In Vancouver, be captivated by the stunning coastal scenery, lush parks, and vibrant arts scene. Then, immerse yourself in the natural beauty of Banff National Park, with its majestic mountains, crystal-clear lakes, and abundant wildlife. Conclude your journey in Quebec City, a charming historic city with cobblestone streets, picturesque architecture, and rich history. From urban excitement to natural beauty, Canada offers an unforgettable experience!"
     }
   ],
   "Europe": [
     {
       "id": 1, 
       "place": "Italy", 
-      "duration": "14 Days", 
+      "duration": "7 Days", 
       "img": "/img/location-photos/Italy.jfif", 
       "city": ["Rome", "Sorrento", "Tuscany", "Cinque Terre", "Venice"],
       "details": "Embark on a magical journey through Italy! Explore the timeless streets of Rome, where history and modern life intertwine. Relax in the stunning coastal charm of Sorrento, savoring breathtaking views of the Bay of Naples. Discover the enchanting landscapes of Tuscany, dotted with vineyards and picturesque villages. Wander through the colorful cliffside villages of Cinque Terre, a true coastal gem. Finally, lose yourself in the romantic canals of Venice, where every turn reveals hidden treasures."
@@ -29,7 +36,7 @@
     {
       "id": 2, 
       "place": "Portugal", 
-      "duration": "14 Days", 
+      "duration": "7 Days", 
       "img": "/img/location-photos/Portugal.jpg", 
       "city": ["Lisbon", "Porto", "Algarve"],
       "details": "Uncover the beauty of Portugal with a journey through its iconic destinations! Start in Lisbon, where historic charm meets vibrant culture, with stunning views from its hilltop neighborhoods. Next, explore Porto, famous for its rich wine heritage and picturesque riverside. Finally, bask in the sun-soaked beaches of the Algarve, where golden cliffs meet crystal-clear waters. With delicious cuisine, friendly locals, and breathtaking scenery, Portugal is your perfect getaway!"
@@ -39,36 +46,26 @@
     {
       "id": 1, 
       "place": "Korea", 
-      "duration": "10 Days", 
-      "img": "/img/location-photos/seoul.jpg", 
+      "duration": "7 Days", 
+      "img": "/img/location-photos/SouthKorea.jfif", 
       "city": ["Seoul", "Busan", "Jeju", "Incheon"],
       "details": "Embark on an unforgettable journey through South Korea! Start in Seoul, where ancient traditions blend seamlessly with modern skyscrapers and vibrant street life. Next, experience the coastal beauty of Busan, famous for its stunning beaches and bustling fish markets. Don’t miss Jeju Island, a paradise of volcanic landscapes, lush greenery, and picturesque waterfalls. Finally, explore Incheon, home to a dynamic port city and the gateway to your adventures. With rich culture, delicious cuisine, and breathtaking scenery, South Korea awaits your discovery!"
     },
     {
       "id": 2, 
       "place": "China", 
-      "duration": "10-12 Days", 
-      "img": "/img/location-photos/china.png", 
+      "duration": "6 Days", 
+      "img": "/img/location-photos/China.jpg", 
       "city": ["Beijing", "Shanghai", "Northern China"],
       "details": "Discover the wonders of China, a land of ancient history and modern marvels! Start your adventure in Beijing, where the majestic Great Wall and the Forbidden City await. Next, explore the vibrant metropolis of Shanghai, a bustling fusion of tradition and innovation, with stunning skyline views and rich cultural experiences. Don’t forget to venture into Northern China, where you’ll find breathtaking landscapes, charming villages, and unique culinary delights. From historical treasures to contemporary thrills, China promises an unforgettable journey!"
-    }  
-  ],
-  "Australasia": [
-    {
-      "id": 1, 
-      "place": "Australia", 
-      "duration": "10-14 Days", 
-      "img": "/img/location-photos/australia.png", 
-      "city": ["Sydney", "Melbourne", "Kakadu", "Queensland"],
-      "details": "Experience the diverse beauty of Australia! Start in Sydney, where iconic landmarks like the Sydney Opera House and Harbour Bridge greet you, alongside stunning beaches and vibrant nightlife. Next, immerse yourself in the cultural capital of Melbourne, known for its eclectic arts scene, café culture, and hidden laneways. Adventure awaits in Kakadu National Park, a UNESCO World Heritage site teeming with wildlife and ancient Aboriginal rock art. Finally, bask in the tropical paradise of Queensland, home to the Great Barrier Reef and breathtaking beaches."
     },
     {
       "id": 2, 
-      "place": "New Zealand", 
-      "duration": "8 Days", 
-      "img": "/img/location-photos/new_zealand.png", 
-      "city": ["Auckland", "Queenstown", "Wellington"],
-      "details": "Embark on an unforgettable adventure in New Zealand, a land of stunning landscapes and vibrant culture! Discover the breathtaking beauty of the North Island, from the geothermal wonders of Rotorua to the bustling streets of Auckland. Explore the South Island's majestic mountains, serene fjords, and picturesque towns like Queenstown, the adventure capital of the world. Experience rich Maori heritage, indulge in world-class wines, and enjoy thrilling outdoor activities, from hiking to bungee jumping. New Zealand’s diverse beauty and warm hospitality await your exploration!"
-    }
+      "place": "Japan", 
+      "duration": "7 Days", 
+      "img": "/img/location-photos/Japan.jpeg", 
+      "city": ["Tokyo", "Kyoto", "Osaka", "Kanazawa"],
+      "details": "Experience the beauty and culture of Japan, a country where tradition meets modernity! Begin your journey in Tokyo, a bustling city with towering skyscrapers, historic temples, and cutting-edge technology. Then, travel to Kyoto, the heart of Japan's cultural heritage, where you can stroll through serene Zen gardens and visit ancient shrines. In Osaka, indulge in delicious street food and explore vibrant neighborhoods. Finally, visit Kanazawa, known for its well-preserved Edo-period districts, art museums, and beautiful gardens. Japan offers a rich and diverse adventure that will leave you with lasting memories!"
+    }  
   ]
 }

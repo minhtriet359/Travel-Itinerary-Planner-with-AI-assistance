@@ -47,6 +47,23 @@ export function attachDragendListener(map, getTypes) {
   });
 }
 
+//Function to get lat and lng from address
+export async function getLatLngFromAddress(address) {
+  const geocoder = new google.maps.Geocoder();
+  return new Promise((resolve, reject) => {
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const { lat, lng } = results[0].geometry.location;
+        resolve({ lat: lat(), lng: lng() });
+      } else {
+        reject(
+          "Geocode was not successful for the following reason: " + status,
+        );
+      }
+    });
+  });
+}
+
 //Search for nearby locations on the map based on type
 export async function nearbySearch(center,radius,type) {
   const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
