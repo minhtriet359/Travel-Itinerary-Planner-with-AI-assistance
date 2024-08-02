@@ -11,8 +11,7 @@ const PLACE_TYPES = {
 };
 const inputValues = ["destination", "startDate", "endDate", "guests"];
 
-let types=Object.keys(PLACE_TYPES);
-
+let types = Object.keys(PLACE_TYPES);
 
 renderHeader();
 initializeMap();
@@ -79,84 +78,145 @@ async function initializeMap() {
   if (destination) {
     try {
       const { lat, lng } = await getLatLngFromAddress(destination);
-      console.log('here1');
+      console.log("here1");
       await initAndSetupMap({ lat, lng });
     } catch (error) {
       console.log(error);
       //default location
-      await initAndSetupMap({ lat: 61.2181, lng: -149.9003});
+      await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
     }
   } else {
-    console.log('here2');
-    await initAndSetupMap({ lat: 61.2181, lng: -149.9003});
+    console.log("here2");
+    await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
   }
 
-async function initAndSetupMap(center){
-  const gmap= await map.initMap(center);
-  for (let type of types){
-    const results=await map.nearbySearch(gmap.center, 6000, PLACE_TYPES[type]);
-    if(results){results.forEach((result)=>map.savePlace(result,type));}; 
-    map.addMarker(type);
-    map.createPlaceCard(type);
-  }
-  map.updatePlaceNumber(types);
-  // Attach dragend event listener
-  map.attachDragendListener(gmap, getTypes);
-}
-
-// Function to get query parameter values by name
-function getInpFromUrl(name) {
-  return decodeURIComponent(
-    new URLSearchParams(window.location.search).get(name),
-  );
-}
-
-//Function to get lat and lng from address
-async function getLatLngFromAddress(address) {
-  const geocoder = new google.maps.Geocoder();
-  return new Promise((resolve, reject) => {
-    geocoder.geocode({ address }, (results, status) => {
-      if (status === "OK" && results[0]) {
-        const { lat, lng } = results[0].geometry.location;
-        resolve({ lat: lat(), lng: lng() });
-      } else {
-        reject(
-          "Geocode was not successful for the following reason: " + status,
-        );
+  async function initAndSetupMap(center) {
+    const gmap = await map.initMap(center);
+    for (let type of types) {
+      const results = await map.nearbySearch(
+        gmap.center,
+        6000,
+        PLACE_TYPES[type],
+      );
+      if (results) {
+        results.forEach((result) => map.savePlace(result, type));
       }
+      map.addMarker(type);
+      map.createPlaceCard(type);
+    }
+    map.updatePlaceNumber(types);
+    // Attach dragend event listener
+    map.attachDragendListener(gmap, getTypes);
+  }
+
+  // Function to get query parameter values by name
+  function getInpFromUrl(name) {
+    return decodeURIComponent(
+      new URLSearchParams(window.location.search).get(name),
+    );
+  }
+
+  const startDate = getInpFromUrl(inputValues[1]);
+  const endDate = getInpFromUrl(inputValues[2]);
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+ 
+
+  // Array of days of the week
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  function getDaysOfWeek(startDateObj, endDateObj) {
+    const days = [];
+    let currentDate = new Date(startDateObj);
+    while (currentDate <= endDateObj) {
+      // Get the day of the week for the current date
+      const dayOfWeek = daysOfWeek[currentDate.getDay()];
+      // Add the day to the array
+      days.push(dayOfWeek);
+      // Increment the date by one day
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return days;
+  }
+  // Get the days of the week
+  const allDays = getDaysOfWeek(startDateObj, endDateObj);
+  // Display the days
+  console.log("Days of the week between start and end date:");
+  console.log(allDays);
+
+
+  // Assign days of the week as headers
+  const itineraryDetailGrid = document.querySelector(".itinerary-detail-grid");
+  itineraryDetailGrid.innerHTML = allDays
+    .map(
+      (day, index) =>
+        `<h4 id="${startDateObj.getFullYear()}-${
+          startDateObj.getMonth() + 1 < 10
+            ? `0${startDateObj.getMonth() + 1}`
+            : startDateObj.getMonth() + 1
+        }-${
+          startDateObj.getDate() + index + 1 < 10
+            ? `0${startDateObj.getDate() + index + 1}`
+            : startDateObj.getDate() + index + 1
+        }">${day}</h4>`,
+    )
+    .join("");
+
+  //Function to get lat and lng from address
+  async function getLatLngFromAddress(address) {
+    const geocoder = new google.maps.Geocoder();
+    return new Promise((resolve, reject) => {
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const { lat, lng } = results[0].geometry.location;
+          resolve({ lat: lat(), lng: lng() });
+        } else {
+          reject(
+            "Geocode was not successful for the following reason: " + status,
+          );
+        }
+      });
     });
-  });
-}
+  }
 }
 
 //Function to get current types
-function getTypes(){
+function getTypes() {
   return types;
 }
 
 
 /* ******** FILTER BUTTONS CONTROLLER ******** */
-document.querySelector(".place-detail-grid").addEventListener('click', (element)=>{
-  if(element.target.closest('.filter-buttons')){
-    selectPlaceFilters(element);
-  }
-  if(element.target.closest('#filter-actions')){
-    applyFilterAction(element);
-  }
-});
+document
+  .querySelector(".place-detail-grid")
+  .addEventListener("click", (element) => {
+    if (element.target.closest(".filter-buttons")) {
+      selectPlaceFilters(element);
+    }
+    if (element.target.closest("#filter-actions")) {
+      applyFilterAction(element);
+    }
+  });
 
-
-function selectPlaceFilters(element){
+function selectPlaceFilters(element) {
   const filterLi = element.target.closest(".filter-li");
   if (filterLi) {
-    const linkElement = filterLi.querySelector('a');
+    const linkElement = filterLi.querySelector("a");
     if (linkElement) {
       linkElement.classList.toggle("selected");
     }
   }
-};
+}
 
-function applyFilterAction(element){
+function applyFilterAction(element) {
   const applyAction = element.target.closest("#apply-filter");
   const clearAction = element.target.closest("#clear-filter");
   if (!applyAction && !clearAction) return;
@@ -171,19 +231,18 @@ function applyFilterAction(element){
   map.updatePlaceNumber(types);
 }
 
-function clearFilter(){
-  console.log
-  document.querySelectorAll(".selected").forEach((action)=>{
+function clearFilter() {
+  console.log;
+  document.querySelectorAll(".selected").forEach((action) => {
     action.classList.remove("selected");
   });
-};
-
-function updateType(){
-  const selectedElems=Array.from(document.querySelectorAll(".selected"));
-  if(selectedElems.length===0){
-    types=Object.keys(PLACE_TYPES);
-  }else{
-    types=selectedElems.map((element)=>element.parentNode.id);
-  }
 }
 
+function updateType() {
+  const selectedElems = Array.from(document.querySelectorAll(".selected"));
+  if (selectedElems.length === 0) {
+    types = Object.keys(PLACE_TYPES);
+  } else {
+    types = selectedElems.map((element) => element.parentNode.id);
+  }
+}
