@@ -17,6 +17,62 @@ let types=Object.keys(PLACE_TYPES);
 renderHeader();
 initializeMap();
 
+
+const destination = new URLSearchParams(window.location.search).get('destination');
+
+const place = destination.split(',')[1];
+const city = destination.split(',')[0];
+console.log('Clicked itinerary link with destination:', destination, city, place);
+await displayItineraryInfo(city, place);
+
+async function displayItineraryInfo(city, place){
+  let response = await fetch(`/api/locations`);
+  let itinerary = await response.json();  
+  console.log(itinerary);
+
+  // let location = itinerary[place];
+  // console.log(location);
+  let locationsArray = flattenLocations(itinerary);
+  let placeData = findByPlaceCity(locationsArray, place, city);
+  console.log(placeData);
+
+  const itineraryHtml = `
+          <h1>${placeData.place}</h1>
+          <img src="${placeData.img}" alt="${placeData.place}">
+          <p>${placeData.details}</p>
+          <p><strong>Duration:</strong> ${placeData.duration}</p>
+          <h2>Cities:</h2>
+          <p>${placeData.city.join(', ')}</p>
+  `;
+
+  document.querySelector('.itinerary-details').innerHTML = itineraryHtml;
+  }
+
+function flattenLocations(locations){
+    let results = [];
+    for (let key in locations){
+        let location = locations[key];
+        for (let place of location){
+            results.push(place);
+        }
+    }
+    console.log(results);
+    return results;
+}
+
+function findByPlaceCity(array, place, city){
+    console.log(array, place, city);
+    let result = null;
+    for (let item of array){
+        console.log(item);
+        if (item.place === place && item.city.includes(city)) {
+            result = item;
+            break;
+        }
+    }
+    return result;
+}
+
 /* ******** MAP CONTROLLER ******** */
 async function initializeMap() {
   const destination = getInpFromUrl(inputValues[0]);
@@ -78,6 +134,7 @@ function getTypes(){
   return types;
 }
 
+
 /* ******** FILTER BUTTONS CONTROLLER ******** */
 document.querySelector(".place-detail-grid").addEventListener('click', (element)=>{
   if(element.target.closest('.filter-buttons')){
@@ -129,3 +186,4 @@ function updateType(){
     types=selectedElems.map((element)=>element.parentNode.id);
   }
 }
+
