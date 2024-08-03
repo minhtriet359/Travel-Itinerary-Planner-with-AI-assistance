@@ -17,6 +17,10 @@ renderHeader();
 initializeMap();
 
 
+/* ******** STATE CONTROLLER ******** */
+
+
+/* ******** POPULAR ITINERARIES ******** */
 //const destination = getInpFromUrl(inputValues[0]);
 //const place = destination.split(',')[1];
 //const city = destination.split(',')[0];
@@ -77,14 +81,17 @@ async function initializeMap() {
   if (destination) {
     try {
       const { lat, lng } = await map.getLatLngFromAddress(destination);
-      await initAndSetupMap({ lat, lng });
+      const googleMap= await initAndSetupMap({ lat, lng });
+      console.log(googleMap.center);
     } catch (error) {
       console.log(error);
       //default location
-      await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
+       const googleMap=await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
+      console.log(googleMap.center);
     }
   } else {
-    await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
+     const googleMap=await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
+    console.log(googleMap.center);
   }
 }
 
@@ -105,6 +112,7 @@ async function initAndSetupMap(center) {
   map.updatePlaceNumber(types);
   // Attach dragend event listener
   map.attachDragendListener(gmap, getTypes);
+  return gmap;
 }
 
 //Function to get current types

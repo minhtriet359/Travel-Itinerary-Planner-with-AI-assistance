@@ -179,6 +179,11 @@ app.post('/chatbot-response', async (req, res) => {
   }
 });
 
+// user settings
+app.get('/accountSettings', isAuthenticated, (req, res) =>{
+  res.render('accountSettings',{googleAPIKey})
+});
+
 // functions
 async function executeSQL(sql, params) {
   return new Promise (function (resolve, reject) {
@@ -187,7 +192,7 @@ async function executeSQL(sql, params) {
         resolve(rows);
     });
   });
-}//executeSQL
+}
 
 // plan text password -> bcrypt password
 function generateBcrypt(plainTextPassword) {
