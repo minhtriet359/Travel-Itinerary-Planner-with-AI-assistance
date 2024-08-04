@@ -14,6 +14,33 @@ html, body {
   padding-top: 85px;
 }
 
+.itinerary-container{
+  width: 300px;
+  overflow-y: scroll;
+  padding: 10px;
+}
+
+.accordion p {
+  display: none;
+}
+
+.accordion p:empty:after { 
+  content: "Please select an activity for this day.";
+} 
+
+.accordion.show p {
+  display: block;
+}
+
+.accordion.show .arrow {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.itinerary-details img {
+  width: 100%;
+}
+
 .itinerary-detail-grid {
   width: 30%;
   padding-left: 10px;
@@ -183,3 +210,21 @@ li{
 .stars-inner::before {
   content: "★★★★★"; /* Using Unicode stars */
 }
+
+/* This is the utility arrow */
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  position: relative;
+  bottom: 5px;
+  
+  transition: .5s;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}  /*  Utility arrow */
+

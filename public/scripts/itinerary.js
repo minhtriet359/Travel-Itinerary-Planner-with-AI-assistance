@@ -21,11 +21,11 @@ initializeMap();
 
 
 /* ******** POPULAR ITINERARIES ******** */
-//const destination = getInpFromUrl(inputValues[0]);
-//const place = destination.split(',')[1];
-//const city = destination.split(',')[0];
-//console.log('Clicked itinerary link with destination:', destination, city, place);
-//await displayItineraryInfo(city, place);
+const destination = getInpFromUrl(inputValues[0]);
+const place = destination.split(',')[1];
+const city = destination.split(',')[0];
+console.log('Clicked itinerary link with destination:', destination, city, place);
+await displayItineraryInfo(city, place);
 
 async function displayItineraryInfo(city, place){
   let response = await fetch(`/api/locations`);
@@ -40,13 +40,38 @@ async function displayItineraryInfo(city, place){
 
   const itineraryHtml = `
           <h1>${placeData.place}</h1>
-          <img src="${placeData.img}" alt="${placeData.place}">
+          <img src="${placeData.img}" alt="${placeData.place}" >
           <p>${placeData.details}</p>
           <p><strong>Duration:</strong> ${placeData.duration}</p>
           <h2>Cities:</h2>
           <p>${placeData.city.join(', ')}</p>
   `;
 
+  let days = parseInt(placeData.duration);
+
+  for (let i = 1 ; i <= days  ; i++) {
+    console.log(i);
+    document.querySelector(".activity-details").innerHTML += `
+          <div class="accordion">
+          <h2><div class="arrow right"></div> Day ${i} </h2>
+          <p></p>
+          </div>
+    `;
+  }
+
+  let accordions = document.querySelectorAll(".accordion");
+  for (let accordion of accordions) {
+    accordion.addEventListener("click", (event) => {
+      if (accordion.classList.contains("show")) {
+          accordion.classList.remove("show");
+      }else{ 
+        for (let accordion2 of accordions) {
+          accordion2.classList.remove("show");
+        }
+       accordion.classList.add("show");
+      }
+    })
+  }
   document.querySelector('.itinerary-details').innerHTML = itineraryHtml;
   }
 
