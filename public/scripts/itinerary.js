@@ -9,7 +9,7 @@ const PLACE_TYPES = {
   hotel: "lodging",
   mall: "shopping_mall",
 };
-const inputValues = ["destination", "startDate", "endDate", "guests"];
+const inputValues = ["destination", "startDate", "endDate", "guests", "duration"];
 
 let types = Object.keys(PLACE_TYPES);
 
@@ -21,19 +21,19 @@ initializeMap();
 
 
 /* ******** POPULAR ITINERARIES ******** */
-//const destination = getInpFromUrl(inputValues[0]);
-//const place = destination.split(',')[1];
-//const city = destination.split(',')[0];
-//console.log('Clicked itinerary link with destination:', destination, city, place);
-//await displayItineraryInfo(city, place);
+const destination = getInpFromUrl(inputValues[0]);
+const place = destination.split(',')[1];
+const city = destination.split(',')[0];
+console.log('Clicked itinerary link with destination:', destination, city, place);
+await displayItineraryInfo(city, place);
 
 async function displayItineraryInfo(city, place){
   let response = await fetch(`/api/locations`);
   let itinerary = await response.json();  
   console.log(itinerary);
 
-  // let location = itinerary[place];
-  // console.log(location);
+  let location = itinerary[place];
+  console.log(location);
   let locationsArray = flattenLocations(itinerary);
   let placeData = findByPlaceCity(locationsArray, place, city);
   console.log(placeData);
@@ -42,12 +42,9 @@ async function displayItineraryInfo(city, place){
           <h1>${placeData.place}</h1>
           <img src="${placeData.img}" alt="${placeData.place}">
           <p>${placeData.details}</p>
-          <p><strong>Duration:</strong> ${placeData.duration}</p>
-          <h2>Cities:</h2>
-          <p>${placeData.city.join(', ')}</p>
   `;
 
-  document.querySelector('.itinerary-details').innerHTML = itineraryHtml;
+  document.querySelector('.itinerary-overview').innerHTML += itineraryHtml;
   }
 
 function flattenLocations(locations){
@@ -165,7 +162,7 @@ console.log(allDays);
 
 
 // Assign days of the week as headers
-const itineraryDetailGrid = document.querySelector(".itinerary-detail-grid");
+const itineraryDetailGrid = document.querySelector(".itinerary-details");
 itineraryDetailGrid.innerHTML = allDays
   .map(
     (day, index) =>

@@ -15,8 +15,7 @@ html, body {
 }
 
 .itinerary-detail-grid {
-  width: 30%;
-  padding-left: 10px;
+  width: 35%;
   border-right: 1px solid #e6e6e6;
   overflow-y: auto;
 }
@@ -33,7 +32,7 @@ html, body {
 }
 
 #map {
-  width: 40%;
+  width: 35%;
   position: fixed;
   right: 0;
   top: 0px;
