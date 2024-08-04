@@ -9,7 +9,7 @@ const PLACE_TYPES = {
   hotel: "lodging",
   mall: "shopping_mall",
 };
-const inputValues = ["destination", "startDate", "endDate", "guests", "duration"];
+const inputValues = ["destination", "startDate", "endDate", "duration", "guests"];
 
 let types = Object.keys(PLACE_TYPES);
 
@@ -20,7 +20,7 @@ initializeMap();
 /* ******** STATE CONTROLLER ******** */
 
 
-/* ******** POPULAR ITINERARIES ******** */
+/* ******** POPULAR ITINERARIES OVERVIEW ******** */
 const destination = getInpFromUrl(inputValues[0]);
 const place = destination.split(',')[1];
 const city = destination.split(',')[0];
@@ -125,12 +125,6 @@ function getInpFromUrl(name) {
 }
   
 /* ******** ITINERARY DETAIL SECTION ******** */
-const startDate = getInpFromUrl(inputValues[1]);
-const endDate = getInpFromUrl(inputValues[2]);
-const startDateObj = new Date(startDate);
-const endDateObj = new Date(endDate);
-
-// Array of days of the week
 const daysOfWeek = [
   "Monday",
   "Tuesday",
@@ -140,30 +134,22 @@ const daysOfWeek = [
   "Saturday",
   "Sunday",
 ];
-
-function getDaysOfWeek(startDateObj, endDateObj) {
-  const days = [];
-  let currentDate = new Date(startDateObj);
-  while (currentDate <= endDateObj) {
-    // Get the day of the week for the current date
-    const dayOfWeek = daysOfWeek[currentDate.getDay()];
-    // Add the day to the array
-    days.push(dayOfWeek);
-    // Increment the date by one day
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return days;
-}
-// Get the days of the week
-const allDays = getDaysOfWeek(startDateObj, endDateObj);
-// Display the days
-console.log("Days of the week between start and end date:");
-console.log(allDays);
-
-
-// Assign days of the week as headers
+const startDate = getInpFromUrl(inputValues[1]);
+const endDate = getInpFromUrl(inputValues[2]);
+const duration = getInpFromUrl(inputValues[3])
 const itineraryDetailGrid = document.querySelector(".itinerary-details");
-itineraryDetailGrid.innerHTML = allDays
+
+// Display the days
+//console.log("Days of the week between start and end date:");
+//console.log(allDays);
+
+//Generate itineray dates based on start/end dates
+if(startDate & endDate){
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  const allDays = getDaysOfWeek(startDateObj, endDateObj);
+  // Assign days of the week as headers
+  itineraryDetailGrid.innerHTML = allDays
   .map(
     (day, index) =>
       `<h4 id="${startDateObj.getFullYear()}-${
@@ -177,6 +163,35 @@ itineraryDetailGrid.innerHTML = allDays
       }">${day}</h4>`,
   )
   .join("");
+}
+
+//Generate itineray dates based on duration for home page itineraries
+if(duration){
+  const days = parseInt(duration, 10);
+  for (let i = 0; i < days; i++){
+    itineraryDetailGrid.innerHTML += 
+    `
+    <div class="daily-schedule" id="day${i+1}">
+      <h4>Day ${i+1}</h4> 
+    </div>
+    `;
+  }
+}
+
+// Get the days of the week
+function getDaysOfWeek(startDateObj, endDateObj) {
+  const days = [];
+  let currentDate = new Date(startDateObj);
+  while (currentDate <= endDateObj) {
+    // Get the day of the week for the current date
+    const dayOfWeek = daysOfWeek[currentDate.getDay()];
+    // Add the day to the array
+    days.push(dayOfWeek);
+    // Increment the date by one day
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return days;
+}
 
 /* ******** FILTER BUTTONS CONTROLLER ******** */
 document
