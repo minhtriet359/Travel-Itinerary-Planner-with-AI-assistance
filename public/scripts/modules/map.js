@@ -185,6 +185,8 @@ function addToItinerary() {
         </div>
         `;
       savedPlaceList.innerHTML+=savedPlaceCardHTML;
+      // writing to activity list 
+      addActivityToSelectedDay(place.name)
     } else {
       // Handle errors
       console.error('Error getting place details');
@@ -258,4 +260,20 @@ function getPlaceAddress(place) {
 //clear all place cards
 export function clearAllPlaceCards(){
   document.querySelector('.place-list').innerHTML='';
+}
+
+function addActivityToSelectedDay(activity) {
+  const target = document.querySelector(".accordion.show");
+  if (!target){
+    return;
+  } 
+  const targetP = target.querySelector("p");
+  if (!targetP){
+    return;
+  }
+  if (targetP.textContent.length != 0){
+    targetP.textContent += ", ";
+  }
+  targetP.textContent += activity;
+  
 }

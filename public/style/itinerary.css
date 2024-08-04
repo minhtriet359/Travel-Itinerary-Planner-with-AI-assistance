@@ -18,6 +18,7 @@ html, body {
   width: 35%;
   border-right: 1px solid #e6e6e6;
   overflow-y: auto;
+  padding: 10px;
 }
 
 .place-detail-grid{
@@ -37,6 +38,48 @@ html, body {
   right: 0;
   top: 0px;
   height: 100%;
+}
+
+
+/*
+**** Left Section **** 
+*/
+.itinerary-detail-grid img {
+  width: 100%;
+}
+
+.accordion p {
+  display: none;
+}
+
+.accordion p:empty:after { 
+  content: "Please select an activity for this day.";
+} 
+
+
+.accordion.show p {
+  display: block;
+}
+
+.accordion.show .arrow {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  position: relative;
+  bottom: 5px;
+
+  transition: .5s;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
 }
 
 /*
@@ -182,3 +225,5 @@ li{
 .stars-inner::before {
   content: "★★★★★"; /* Using Unicode stars */
 }
+
+

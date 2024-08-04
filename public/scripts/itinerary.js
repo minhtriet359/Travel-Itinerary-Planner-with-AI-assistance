@@ -1,7 +1,6 @@
 import { renderHeader } from "./shared/header.js";
 import * as map from "./modules/map.js";
 
-
 const PLACE_TYPES = {
   see: "tourist_attraction",
   dining: "restaurant",
@@ -10,15 +9,8 @@ const PLACE_TYPES = {
   hotel: "lodging",
   mall: "shopping_mall",
 };
-const inputValues = ["destination", "startDate", "endDate", "duration", "guests"];
-
+const inpVals = ["destination", "startDate", "endDate", "duration", "guests"];
 let types = Object.keys(PLACE_TYPES);
-
-renderHeader();
-initializeMap();
-
-
-/* ******** ITINERARY DETAIL SECTION ******** */
 const daysOfWeek = [
   "Monday",
   "Tuesday",
@@ -28,18 +20,21 @@ const daysOfWeek = [
   "Saturday",
   "Sunday",
 ];
-const startDate = getInpFromUrl(inputValues[1]);
-const endDate = getInpFromUrl(inputValues[2]);
-const duration = getInpFromUrl(inputValues[3]);
-console.log(duration);
+const destination = getInpFromUrl(inpVals[0]);
+const startDate = getInpFromUrl(inpVals[1]);
+const endDate = getInpFromUrl(inpVals[2]);
+const duration = getInpFromUrl(inpVals[3]);
+const currentUrl = window.location.href;
+
+renderHeader();
+initializeMap();
+
+
+/* ******** ITINERARY DETAIL SECTION ******** */
 const itineraryDetailGrid = document.querySelector(".itinerary-details");
 
-// Display the days
-//console.log("Days of the week between start and end date:");
-//console.log(allDays);
-
 //Generate itineray dates based on start/end dates
-if(startDate && endDate){
+if(currentUrl.includes("startDate") && currentUrl.includes("endDate")){
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);
   const allDays = getDaysOfWeek(startDateObj, endDateObj);
@@ -61,8 +56,7 @@ if(startDate && endDate){
 }
 
 //Generate itineray dates based on duration for home page itineraries
-if(duration){
-  const destination = getInpFromUrl(inputValues[0]);
+if(currentUrl.includes("duration")){
   const place = destination.split(',')[1];
   const city = destination.split(',')[0];
   await displayItineraryInfo(city, place);
@@ -70,10 +64,24 @@ if(duration){
   for (let i = 0; i < days; i++){
     itineraryDetailGrid.innerHTML += 
     `
-    <div class="daily-schedule" id="day${i+1}">
-      <h4>Day ${i+1}</h4> 
+    <div class="accordion daily-schedule">
+    <h3><div class="arrow right"></div> Day ${i+1} </h3>
+    <p></p>
     </div>
     `;
+  }
+  let accordions = document.querySelectorAll(".accordion");
+  for (let accordion of accordions) {
+    accordion.addEventListener("click", (event) => {
+      if (accordion.classList.contains("show")) {
+          accordion.classList.remove("show");
+      }else{ 
+        for (let accordion2 of accordions) {
+          accordion2.classList.remove("show");
+        }
+       accordion.classList.add("show");
+      }
+    })
   }
 }
 
@@ -101,12 +109,12 @@ async function displayItineraryInfo(city, place){
 
   const itineraryHtml = `
           <h1>${placeData.place}</h1>
-          <img src="${placeData.img}" alt="${placeData.place}">
+          <img src="${placeData.img}" alt="${placeData.place}" >
           <p>${placeData.details}</p>
   `;
 
   document.querySelector('.itinerary-overview').innerHTML += itineraryHtml;
-  }
+}
 
 function flattenLocations(locations){
     let results = [];
@@ -132,7 +140,7 @@ function findByPlaceCity(array, place, city){
 
 /* ******** MAP CONTROLLER ******** */
 async function initializeMap() {
-  const destination = getInpFromUrl(inputValues[0]);
+  const destination = getInpFromUrl(inpVals[0]);
   if (destination) {
     try {
       const { lat, lng } = await map.getLatLngFromAddress(destination);
@@ -238,6 +246,6 @@ function updateType() {
 
 /* ******** CHATBOT REDIRECT ******** */
 document.getElementById('assitant-button').addEventListener('click',()=>{
-  const destination = getInpFromUrl(inputValues[0]);
+  const destination = getInpFromUrl(inpVals[0]);
   window.location.href=`/chatbot?destination=${encodeURIComponent(destination)}`;
 });
