@@ -1,6 +1,7 @@
 import { renderHeader } from "./shared/header.js";
 import * as map from "./modules/map.js";
 
+
 const PLACE_TYPES = {
   see: "tourist_attraction",
   dining: "restaurant",
@@ -9,7 +10,7 @@ const PLACE_TYPES = {
   hotel: "lodging",
   mall: "shopping_mall",
 };
-const inputValues = ["destination", "startDate", "endDate", "guests"];
+const inputValues = ["destination", "startDate", "endDate", "duration", "guests"];
 
 let types = Object.keys(PLACE_TYPES);
 
@@ -17,7 +18,25 @@ renderHeader();
 initializeMap();
 
 
-/* ******** STATE CONTROLLER ******** */
+/* ******** ITINERARY DETAIL SECTION ******** */
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+const startDate = getInpFromUrl(inputValues[1]);
+const endDate = getInpFromUrl(inputValues[2]);
+const duration = getInpFromUrl(inputValues[3]);
+console.log(duration);
+const itineraryDetailGrid = document.querySelector(".itinerary-details");
+
+// Display the days
+//console.log("Days of the week between start and end date:");
+//console.log(allDays);
 
 
 /* ******** POPULAR ITINERARIES ******** */
@@ -27,24 +46,72 @@ const city = destination.split(',')[0];
 console.log('Clicked itinerary link with destination:', destination, city, place);
 await displayItineraryInfo(city, place);
 
+// //Generate itineray dates based on start/end dates
+// if(startDate && endDate){
+//   const startDateObj = new Date(startDate);
+//   const endDateObj = new Date(endDate);
+//   const allDays = getDaysOfWeek(startDateObj, endDateObj);
+//   // Assign days of the week as headers
+//   itineraryDetailGrid.innerHTML = allDays
+//   .map(
+//     (day, index) =>
+//       `<h4 id="${startDateObj.getFullYear()}-${
+//         startDateObj.getMonth() + 1 < 10
+//           ? `0${startDateObj.getMonth() + 1}`
+//           : startDateObj.getMonth() + 1
+//       }-${
+//         startDateObj.getDate() + index + 1 < 10
+//           ? `0${startDateObj.getDate() + index + 1}`
+//           : startDateObj.getDate() + index + 1
+//       }">${day}</h4>`,
+//   )
+//   .join("");
+// }
+
+
+// //Generate itineray dates based on duration for home page itineraries
+// if(duration){
+//   const destination = getInpFromUrl(inputValues[0]);
+//   const place = destination.split(',')[1];
+//   const city = destination.split(',')[0];
+//   await displayItineraryInfo(city, place);
+//   const days = parseInt(duration, 10);
+//   for (let i = 0; i < days; i++){
+//     itineraryDetailGrid.innerHTML += 
+//     `
+//     <div class="daily-schedule" id="day${i+1}">
+//       <h4>Day ${i+1}</h4> 
+//     </div>
+//     `;
+//   }
+// }
+
+// Get the days of the week
+function getDaysOfWeek(startDateObj, endDateObj) {
+  const days = [];
+  let currentDate = new Date(startDateObj);
+  while (currentDate <= endDateObj) {
+    // Get the day of the week for the current date
+    const dayOfWeek = daysOfWeek[currentDate.getDay()];
+    // Add the day to the array
+    days.push(dayOfWeek);
+    // Increment the date by one day
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return days;
+}
+
+/* ******** POPULAR ITINERARIES OVERVIEW FUNCTIONS ******** */
 async function displayItineraryInfo(city, place){
   let response = await fetch(`/api/locations`);
   let itinerary = await response.json();  
-  console.log(itinerary);
-
-  // let location = itinerary[place];
-  // console.log(location);
   let locationsArray = flattenLocations(itinerary);
   let placeData = findByPlaceCity(locationsArray, place, city);
-  console.log(placeData);
 
   const itineraryHtml = `
           <h1>${placeData.place}</h1>
           <img src="${placeData.img}" alt="${placeData.place}" >
           <p>${placeData.details}</p>
-          <p><strong>Duration:</strong> ${placeData.duration}</p>
-          <h2>Cities:</h2>
-          <p>${placeData.city.join(', ')}</p>
   `;
 
   let days = parseInt(placeData.duration);
@@ -72,8 +139,8 @@ async function displayItineraryInfo(city, place){
       }
     })
   }
-  document.querySelector('.itinerary-details').innerHTML = itineraryHtml;
-  }
+  document.querySelector('.itinerary-overview').innerHTML += itineraryHtml;
+}
 
 function flattenLocations(locations){
     let results = [];
@@ -83,15 +150,12 @@ function flattenLocations(locations){
             results.push(place);
         }
     }
-    console.log(results);
     return results;
 }
 
 function findByPlaceCity(array, place, city){
-    console.log(array, place, city);
     let result = null;
     for (let item of array){
-        console.log(item);
         if (item.place === place && item.city.includes(city)) {
             result = item;
             break;
@@ -151,60 +215,6 @@ function getInpFromUrl(name) {
     new URLSearchParams(window.location.search).get(name),
   );
 }
-  
-/* ******** ITINERARY DETAIL SECTION ******** */
-const startDate = getInpFromUrl(inputValues[1]);
-const endDate = getInpFromUrl(inputValues[2]);
-const startDateObj = new Date(startDate);
-const endDateObj = new Date(endDate);
-
-// Array of days of the week
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
-function getDaysOfWeek(startDateObj, endDateObj) {
-  const days = [];
-  let currentDate = new Date(startDateObj);
-  while (currentDate <= endDateObj) {
-    // Get the day of the week for the current date
-    const dayOfWeek = daysOfWeek[currentDate.getDay()];
-    // Add the day to the array
-    days.push(dayOfWeek);
-    // Increment the date by one day
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return days;
-}
-// Get the days of the week
-const allDays = getDaysOfWeek(startDateObj, endDateObj);
-// Display the days
-console.log("Days of the week between start and end date:");
-console.log(allDays);
-
-
-// Assign days of the week as headers
-const itineraryDetailGrid = document.querySelector(".itinerary-detail-grid");
-itineraryDetailGrid.innerHTML = allDays
-  .map(
-    (day, index) =>
-      `<h4 id="${startDateObj.getFullYear()}-${
-        startDateObj.getMonth() + 1 < 10
-          ? `0${startDateObj.getMonth() + 1}`
-          : startDateObj.getMonth() + 1
-      }-${
-        startDateObj.getDate() + index + 1 < 10
-          ? `0${startDateObj.getDate() + index + 1}`
-          : startDateObj.getDate() + index + 1
-      }">${day}</h4>`,
-  )
-  .join("");
 
 /* ******** FILTER BUTTONS CONTROLLER ******** */
 document
