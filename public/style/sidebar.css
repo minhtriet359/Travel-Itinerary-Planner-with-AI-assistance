@@ -11,5 +11,6 @@
   line-height: 1; /* Ensures the text is vertically centered */
   position: fixed;
   bottom: 40px;
+  z-index: 1001;
 }
 

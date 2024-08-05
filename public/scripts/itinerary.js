@@ -45,26 +45,14 @@ if (currentUrl.includes("startDate") && currentUrl.includes("endDate")) {
   const endDateObj = new Date(endDate);
   const duration = calculateTripDuration(startDateObj, endDateObj);
   const days = parseInt(duration, 10);
+  itineraryDetailGrid.innerHTML += `<h2 style="margin: 40px 20px; font-weight: 700;">Itinerary</h1>`;
   for (let i = 0; i < days; i++) {
     itineraryDetailGrid.innerHTML += `
     <div class="accordion daily-schedule">
-    <h3><div class="arrow right"></div> Day ${i + 1} </h3>
-    <p></p>
+      <h3><div class="arrow right"></div> Day ${i + 1} </h3>
+      <div class="accordion-content" id="day${i+1}"></div>
     </div>
     `;
-  }
-  let accordions = document.querySelectorAll(".accordion");
-  for (let accordion of accordions) {
-    accordion.addEventListener("click", (event) => {
-      if (accordion.classList.contains("show")) {
-        accordion.classList.remove("show");
-      } else {
-        for (let accordion2 of accordions) {
-          accordion2.classList.remove("show");
-        }
-        accordion.classList.add("show");
-      }
-    });
   }
 }
 
@@ -74,27 +62,29 @@ if (currentUrl.includes("duration")) {
   const city = destination.split(",")[0];
   await displayItineraryInfo(city, place);
   const days = parseInt(duration, 10);
+  itineraryDetailGrid.innerHTML += `<h2 style="margin: 40px 20px; font-weight: 700;">Itinerary</h1>`;
   for (let i = 0; i < days; i++) {
     itineraryDetailGrid.innerHTML += `
     <div class="accordion daily-schedule">
-    <h3><div class="arrow right"></div> Day ${i + 1} </h3>
-    <p></p>
+      <h3><div class="arrow right"></div> Day ${i + 1} </h3>
+      <div class="accordion-content" id="day${i+1}"></div>
     </div>
     `;
   }
-  let accordions = document.querySelectorAll(".accordion");
-  for (let accordion of accordions) {
-    accordion.addEventListener("click", (event) => {
-      if (accordion.classList.contains("show")) {
-        accordion.classList.remove("show");
-      } else {
-        for (let accordion2 of accordions) {
-          accordion2.classList.remove("show");
-        }
-        accordion.classList.add("show");
+}
+
+let accordions = document.querySelectorAll(".accordion");
+for (let accordion of accordions) {
+  accordion.addEventListener("click", (event) => {
+    if (accordion.classList.contains("show")) {
+      accordion.classList.remove("show");
+    } else {
+      for (let accordion2 of accordions) {
+        accordion2.classList.remove("show");
       }
-    });
-  }
+      accordion.classList.add("show");
+    }
+  });
 }
 
 // Get the days of the week
@@ -120,9 +110,13 @@ async function displayItineraryInfo(city, place) {
   let placeData = findByPlaceCity(locationsArray, place, city);
 
   const itineraryHtml = `
-          <h1>${placeData.place}</h1>
-          <img src="${placeData.img}" alt="${placeData.place}" >
-          <p>${placeData.details}</p>
+  <div class="image-container">
+    <img src="${placeData.img}" alt="${placeData.place}">
+    <div class="details">
+      <h2>${placeData.place}</h2>
+      <p>${placeData.details}</p>
+    </div>
+  </div>
   `;
 
   document.querySelector(".itinerary-overview").innerHTML += itineraryHtml;
