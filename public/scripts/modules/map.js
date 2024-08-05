@@ -166,11 +166,7 @@ function addToItinerary() {
 
   service.getDetails({ placeId: placeId }, function (place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      // Successfully fetched place details
-   //   console.log('Place details:', place);
-
       let dayChosenDiv = document.getElementById(`${dayId}`);
-      
       let savedPlaceCardHTML=
         `
         <div class="place-card" id="card ${placeId} ${dayId}">
@@ -183,15 +179,14 @@ function addToItinerary() {
             </div>
         </div>
         `;
-
-      console.log(savedPlaceCardHTML);
-      
       // add card to selected day
       dayChosenDiv.innerHTML += savedPlaceCardHTML;
 
-      while (!document.getElementById(`card ${placeId} ${dayId}`)) {
-        console.log("waiting for card to exist");
-      }
+      // display the accordion with activity added
+      const accordion = document.getElementById(`accordion-${dayId}`);
+      if(!accordion.classList.contains("show")){
+        accordion.classList.add("show");
+      };
 
       // add event listener
       document.querySelectorAll('.removeBtn').forEach((btn)=>{
@@ -207,18 +202,23 @@ function addToItinerary() {
 
 
 function removeFromItinerary() {
-  console.log("Reached removeFromItinerary");
   let btnId = this.id.split(" ");
   // console.log("buttonid:",btnId);
   let cardId = `card ${btnId[1]} ${btnId[2]}`;
   let dayId = `${btnId[2]}`;
-  
   // get itinerary card and day container
   let card = document.getElementById(`${cardId}`);
   let divContainer = document.getElementById(`${dayId}`);
+  let accordion = document.getElementById(`accordion-${dayId}`);
+
+  // Check if the accordion is currently open
+  let isAccordionOpen = accordion.classList.contains("show");
+  console.log(isAccordionOpen);
 
   // remove itinerary card from day container
   divContainer.removeChild(card);
+
+  console.log(`Accordion state after removal: ${accordion.classList.contains("show")}`);
 }
 
 //create and display the place card for type 
@@ -261,7 +261,9 @@ export function createPlaceCard(type){
               (${numRatings}) 
             </div>
           </div>
-          <img class="place-img" src="${place.photos && place.photos[0] ? place.photos[0].getURI() : "https://via.placeholder.com/150"}" alt="${place.displayName} photo">
+          <div class="place-img-container">
+           <img class="place-img" src="${place.photos && place.photos[0] ? place.photos[0].getURI() : "https://via.placeholder.com/150"}" alt="${place.displayName} photo">
+          </div>
         </div>
         `;
       placeList.innerHTML+=placeCardHTML;

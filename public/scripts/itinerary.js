@@ -57,7 +57,7 @@ if (currentUrl.includes("duration")) {
 
 for (let i = 0; i < days; i++) {
   itineraryDetailGrid.innerHTML += `
-  <div class="accordion daily-schedule">
+  <div class="accordion daily-schedule" id="accordion-day${i+1}">
     <h3><div class="arrow right"></div> Day ${i + 1} </h3>
     <div class="accordion-content itineraryDayLabels" id="day${i+1}"></div>
   </div>
@@ -70,9 +70,6 @@ for (let accordion of accordions) {
     if (accordion.classList.contains("show")) {
       accordion.classList.remove("show");
     } else {
-      for (let accordion2 of accordions) {
-        accordion2.classList.remove("show");
-      }
       accordion.classList.add("show");
     }
   });

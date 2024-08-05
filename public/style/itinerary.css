@@ -211,8 +211,8 @@ li{
 }
 
 .place-card {
-  margin: 20px 0px;
   padding-left: 40px;
+  margin: 20px 0px;
   width: 100%;
   background-color: #ffffff;
   border-radius: 4px;
@@ -220,7 +220,7 @@ li{
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -236,7 +236,11 @@ li{
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1000;
+}
+
+.place-img-container{
+  border-radius: 0 4px 4px 0;
+  overflow: hidden;
 }
 
 .place-img {
