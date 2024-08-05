@@ -40,7 +40,7 @@ const locations = require(locationsPath);
 app.use(express.urlencoded({extended: true}));
 
 app.use(function(req, res, next) {
-  res.locals.userId = req.session.userId;
+  res.locals.username = req.session.username;
   res.locals.loggedIn = req.session.authenticated;
   next();
 });
@@ -82,7 +82,7 @@ app.post("/user/new", async function(req, res) {
     let sql = `SELECT * FROM users WHERE emailAddress = ?`;
     let data = await executeSQL(sql, [email]);
     if (data.length > 0) {
-      message = "A user with that email address already exists! ";
+      message = "Email address already exists! Please try again.";
     } else {
       if (newsletterSignup == "on") {
         subscribed = 1;
@@ -123,9 +123,9 @@ app.post("/user/login", async function(req, res) {
     if (matchPassword) {
       req.session.authenticated = true;
       res.locals.loggedIn = await req.session.authenticated;
-      req.session.userId = data[0].firstName + " " + data[0].lastName;
-      console.log(req.session.userId);
-      message = `Welcome back, ${req.session.userId}! `;
+      req.session.username = data[0].firstName + " " + data[0].lastName;
+      req.session.userId = data[0].userId;
+      message = `Welcome back, ${req.session.username}! `;
     } else {
       message = "Incorrect Password  ";
     }
@@ -153,6 +153,24 @@ app.get('/loggedOut', (req, res) => {
   res.render('home', {message, googleAPIKey});
 })
 
+// user settings
+app.get('/accountSettings', isAuthenticated, async (req, res) =>{
+  const {userId}=req.session;
+  let sql = `SELECT * FROM users WHERE userId=?`;
+  let user = await executeSQL(sql, [userId]);
+  res.render('accountSettings', {googleAPIKey, user});
+});
+
+app.post('/accountSettings', isAuthenticated, async (req, res) =>{
+  const {userId}=req.session;
+  const {firstName, lastName, mobilePhone, addressLine, postalCode, country, state} = req.body;
+  let sql = `UPDATE users SET firstName=?, lastName=?, mobilePhone=?, addressLine=?, postalCode=? , country=?, state=? WHERE userId=?`;
+  let user = await executeSQL(sql, [firstName, lastName, mobilePhone, addressLine, postalCode, country, state, userId]);
+  sql = `SELECT * FROM users WHERE userId=?`;
+  user = await executeSQL(sql, [userId]);
+  res.render('accountSettings', {googleAPIKey, user});
+});
+
 //Chatbot
 app.get('/chatbot', (req, res) => {
    const { destination } = req.query;
@@ -179,11 +197,6 @@ app.post('/chatbot-response', async (req, res) => {
   }
 });
 
-// user settings
-app.get('/accountSettings', isAuthenticated, (req, res) =>{
-  res.render('accountSettings',{googleAPIKey})
-});
-
 // functions
 async function executeSQL(sql, params) {
   return new Promise (function (resolve, reject) {
@@ -204,7 +217,6 @@ function generateBcrypt(plainTextPassword) {
 // middleware function for verifying user has been authenticated 
 function isAuthenticated(req, res, next) {
   if (req.session.authenticated) {
-    console.log(req.session.userId);
     next();
   } else {
     res.redirect("/");

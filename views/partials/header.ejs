@@ -30,10 +30,10 @@
     <div class="dropdown-menu">
       <!-- If user logged in, show this menu -->
       <% if (loggedIn) { %>
-        <span id="userId" class="dropdown-item fw-bold"><%=userId%></span>
+        <span id="userId" class="dropdown-item fw-bold"><%=username%></span>
         <a href="/savedItineraries" class="dropdown-item fw-light">Itineraries</a>
-        <a href="/logout" id="logout-modal" class="dropdown-item fw-light">Log out</a>
         <a href="/accountSettings" class="dropdown-item fw-light">Settings</a>
+        <a href="/logout" id="logout-modal" class="dropdown-item fw-light">Log out</a>
       <% }  else { %>
         <!-- If user not logged in, show this menu -->
         <a href="#" id="login-modal" class="dropdown-item fw-light">Log in</a>
