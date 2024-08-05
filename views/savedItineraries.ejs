@@ -6,17 +6,26 @@
     <!-- css files -->
     <link rel="stylesheet" href="/style/shared/header.css">
     <link rel="stylesheet" href="/style/shared/general.css">
-    <link rel="stylesheet" href="/style/homePage.css">
+    <link rel="stylesheet" href="/style/savedItineraries.css">
     <!-- pre-hooked libraries and APIs  -->
     <%- include ('partials/links') %>
   </head>
   <body>
     <%- include('partials/header') %>
     <div class="main-saved-itineraries">
+      <div class="itinerary-card">
+        <img src="/img/location-photos/Alaska.jpg" alt="Alaska">
+        <div class="itinerary-detail">
+          <h3>Alaska</h3>
+        </div>
+        <div class="dates">
+          08/01/2024 - 08/04/2024
+        </div>
+      </div>
     </div>
 
     <%- include('partials/login.ejs') %>
     <%- include('partials/signup.ejs') %>
-    <script src="/scripts/home.js" type="module"></script>
+    <script src="/scripts/savedItineraries.js" type="module"></script>
   </body>
 </html>
