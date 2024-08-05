@@ -29,43 +29,26 @@ const currentUrl = window.location.href;
 renderHeader();
 initializeMap();
 
-
 /* ******** ITINERARY DETAIL SECTION ******** */
+
+function calculateTripDuration(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1; // +1 to include the start date
+}
+
 const itineraryDetailGrid = document.querySelector(".itinerary-details");
 
 //Generate itineray dates based on start/end dates
-if(currentUrl.includes("startDate") && currentUrl.includes("endDate")){
+if (currentUrl.includes("startDate") && currentUrl.includes("endDate")) {
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);
-  const allDays = getDaysOfWeek(startDateObj, endDateObj);
-  // Assign days of the week as headers
-  itineraryDetailGrid.innerHTML = allDays
-  .map(
-    (day, index) =>
-      `<h4 id="${startDateObj.getFullYear()}-${
-        startDateObj.getMonth() + 1 < 10
-          ? `0${startDateObj.getMonth() + 1}`
-          : startDateObj.getMonth() + 1
-      }-${
-        startDateObj.getDate() + index + 1 < 10
-          ? `0${startDateObj.getDate() + index + 1}`
-          : startDateObj.getDate() + index + 1
-      }">${day}</h4>`,
-  )
-  .join("");
-}
-
-//Generate itineray dates based on duration for home page itineraries
-if(currentUrl.includes("duration")){
-  const place = destination.split(',')[1];
-  const city = destination.split(',')[0];
-  await displayItineraryInfo(city, place);
+  const duration = calculateTripDuration(startDateObj, endDateObj);
   const days = parseInt(duration, 10);
-  for (let i = 0; i < days; i++){
-    itineraryDetailGrid.innerHTML += 
-    `
+  for (let i = 0; i < days; i++) {
+    itineraryDetailGrid.innerHTML += `
     <div class="accordion daily-schedule">
-    <h3><div class="arrow right"></div> Day ${i+1} </h3>
+    <h3><div class="arrow right"></div> Day ${i + 1} </h3>
     <p></p>
     </div>
     `;
@@ -74,14 +57,43 @@ if(currentUrl.includes("duration")){
   for (let accordion of accordions) {
     accordion.addEventListener("click", (event) => {
       if (accordion.classList.contains("show")) {
-          accordion.classList.remove("show");
-      }else{ 
+        accordion.classList.remove("show");
+      } else {
         for (let accordion2 of accordions) {
           accordion2.classList.remove("show");
         }
-       accordion.classList.add("show");
+        accordion.classList.add("show");
       }
-    })
+    });
+  }
+}
+
+//Generate itineray dates based on duration for home page itineraries
+if (currentUrl.includes("duration")) {
+  const place = destination.split(",")[1];
+  const city = destination.split(",")[0];
+  await displayItineraryInfo(city, place);
+  const days = parseInt(duration, 10);
+  for (let i = 0; i < days; i++) {
+    itineraryDetailGrid.innerHTML += `
+    <div class="accordion daily-schedule">
+    <h3><div class="arrow right"></div> Day ${i + 1} </h3>
+    <p></p>
+    </div>
+    `;
+  }
+  let accordions = document.querySelectorAll(".accordion");
+  for (let accordion of accordions) {
+    accordion.addEventListener("click", (event) => {
+      if (accordion.classList.contains("show")) {
+        accordion.classList.remove("show");
+      } else {
+        for (let accordion2 of accordions) {
+          accordion2.classList.remove("show");
+        }
+        accordion.classList.add("show");
+      }
+    });
   }
 }
 
@@ -101,9 +113,9 @@ function getDaysOfWeek(startDateObj, endDateObj) {
 }
 
 /* ******** POPULAR ITINERARIES OVERVIEW FUNCTIONS ******** */
-async function displayItineraryInfo(city, place){
+async function displayItineraryInfo(city, place) {
   let response = await fetch(`/api/locations`);
-  let itinerary = await response.json();  
+  let itinerary = await response.json();
   let locationsArray = flattenLocations(itinerary);
   let placeData = findByPlaceCity(locationsArray, place, city);
 
@@ -113,29 +125,29 @@ async function displayItineraryInfo(city, place){
           <p>${placeData.details}</p>
   `;
 
-  document.querySelector('.itinerary-overview').innerHTML += itineraryHtml;
+  document.querySelector(".itinerary-overview").innerHTML += itineraryHtml;
 }
 
-function flattenLocations(locations){
-    let results = [];
-    for (let key in locations){
-        let location = locations[key];
-        for (let place of location){
-            results.push(place);
-        }
+function flattenLocations(locations) {
+  let results = [];
+  for (let key in locations) {
+    let location = locations[key];
+    for (let place of location) {
+      results.push(place);
     }
-    return results;
+  }
+  return results;
 }
 
-function findByPlaceCity(array, place, city){
-    let result = null;
-    for (let item of array){
-        if (item.place === place && item.city.includes(city)) {
-            result = item;
-            break;
-        }
+function findByPlaceCity(array, place, city) {
+  let result = null;
+  for (let item of array) {
+    if (item.place === place && item.city.includes(city)) {
+      result = item;
+      break;
     }
-    return result;
+  }
+  return result;
 }
 
 /* ******** MAP CONTROLLER ******** */
@@ -144,16 +156,16 @@ async function initializeMap() {
   if (destination) {
     try {
       const { lat, lng } = await map.getLatLngFromAddress(destination);
-      const googleMap= await initAndSetupMap({ lat, lng });
+      const googleMap = await initAndSetupMap({ lat, lng });
       console.log(googleMap.center);
     } catch (error) {
       console.log(error);
       //default location
-       const googleMap=await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
+      const googleMap = await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
       console.log(googleMap.center);
     }
   } else {
-     const googleMap=await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
+    const googleMap = await initAndSetupMap({ lat: 61.2181, lng: -149.9003 });
     console.log(googleMap.center);
   }
 }
@@ -209,7 +221,7 @@ function selectPlaceFilters(element) {
     if (linkElement) {
       linkElement.classList.toggle("selected");
     }
-    console.log(linkElement)
+    console.log(linkElement);
   }
 }
 
@@ -245,7 +257,7 @@ function updateType() {
 }
 
 /* ******** CHATBOT REDIRECT ******** */
-document.getElementById('assitant-button').addEventListener('click',()=>{
+document.getElementById("assitant-button").addEventListener("click", () => {
   const destination = getInpFromUrl(inpVals[0]);
-  window.location.href=`/chatbot?destination=${encodeURIComponent(destination)}`;
+  window.location.href = `/chatbot?destination=${encodeURIComponent(destination)}`;
 });
