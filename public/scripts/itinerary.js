@@ -40,37 +40,28 @@ function calculateTripDuration(startDate, endDate) {
 const itineraryDetailGrid = document.querySelector(".itinerary-details");
 
 //Generate itineray dates based on start/end dates
+let days = [];
 if (currentUrl.includes("startDate") && currentUrl.includes("endDate")) {
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);
   const duration = calculateTripDuration(startDateObj, endDateObj);
-  const days = parseInt(duration, 10);
-  itineraryDetailGrid.innerHTML += `<h2 style="margin: 40px 20px; font-weight: 700;">Itinerary</h1>`;
-  for (let i = 0; i < days; i++) {
-    itineraryDetailGrid.innerHTML += `
-    <div class="accordion daily-schedule">
-      <h3><div class="arrow right"></div> Day ${i + 1} </h3>
-      <div class="accordion-content" id="day${i+1}"></div>
-    </div>
-    `;
-  }
+  days = parseInt(duration, 10);
 }
-
 //Generate itineray dates based on duration for home page itineraries
 if (currentUrl.includes("duration")) {
   const place = destination.split(",")[1];
   const city = destination.split(",")[0];
   await displayItineraryInfo(city, place);
-  const days = parseInt(duration, 10);
-  itineraryDetailGrid.innerHTML += `<h2 style="margin: 40px 20px; font-weight: 700;">Itinerary</h1>`;
-  for (let i = 0; i < days; i++) {
-    itineraryDetailGrid.innerHTML += `
-    <div class="accordion daily-schedule">
-      <h3><div class="arrow right"></div> Day ${i + 1} </h3>
-      <div class="accordion-content" id="day${i+1}"></div>
-    </div>
-    `;
-  }
+  days = parseInt(duration, 10);
+}
+
+for (let i = 0; i < days; i++) {
+  itineraryDetailGrid.innerHTML += `
+  <div class="accordion daily-schedule">
+    <h3><div class="arrow right"></div> Day ${i + 1} </h3>
+    <div class="accordion-content" id="day${i+1}"></div>
+  </div>
+  `;
 }
 
 let accordions = document.querySelectorAll(".accordion");
