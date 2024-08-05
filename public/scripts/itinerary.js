@@ -59,7 +59,7 @@ for (let i = 0; i < days; i++) {
   itineraryDetailGrid.innerHTML += `
   <div class="accordion daily-schedule">
     <h3><div class="arrow right"></div> Day ${i + 1} </h3>
-    <div class="accordion-content" id="day${i+1}"></div>
+    <div class="accordion-content itineraryDayLabels" id="day${i+1}"></div>
   </div>
   `;
 }

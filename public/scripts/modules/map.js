@@ -147,51 +147,78 @@ export function updatePlaceNumber(types){
 // Event listeners
 function addCardEventListeners() {
   // array with all place cards
-  let allPlaces = document.querySelectorAll(".place-card"); 
+  let allPlaces = document.querySelectorAll(".daysOptions"); 
   
-  // add event listener for each place card
+  // add event listener to "+" on each place card
   for(let i = 0; i < allPlaces.length; i++) {
     allPlaces[i].addEventListener("click", addToItinerary);
   }
-
-  // create an array with all of the add buttons
-  // let allAddButtons = document.querySelectorAll(".addToItinerary");
-
-  // // add on event listener for each button
-  // for(let i = 0; i < allAddButtons.length; i++) {
-  //   allAddButtons[i].addEventListener("click", displayLocation);
-  // }
 }
 
 // add clicked place to Itinerary
 function addToItinerary() {
-  var service = new google.maps.places.PlacesService(map);
-  // Define the place ID
-  var placeId = this.id;
-  //console.log(this.id);
+  let service = new google.maps.places.PlacesService(map);
+  
+  // Get place and day ID
+  let cardId = this.id.split(" ");
+  let placeId = cardId[0];
+  let dayId = cardId[1];
 
   service.getDetails({ placeId: placeId }, function (place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       // Successfully fetched place details
-      console.log('Place details:', place);
-      let savedPlaceList=document.querySelector('.saved-place-list');
+   //   console.log('Place details:', place);
+
+      let dayChosenDiv = document.getElementById(`${dayId}`);
+      
       let savedPlaceCardHTML=
         `
-        <div class="saved-place-card" id="${place.id}">
-          <div class="saved-place-content">
-            <p class="place-name">${place.name}</p>
-            <p class="place-address">${place.formatted_address}</p>
-          </div>
+        <div class="place-card" id="card ${placeId} ${dayId}">
+            <div class="saved-place-content">
+              <p class="place-name">${place.name}</p>
+              <p class="place-address">${place.formatted_address}</p>
+              <p>
+              <button type="button" class="btn btn-secondary btn-sm removeBtn" id="remove ${placeId} ${dayId}"> Remove </button>
+              </p>
+            </div>
         </div>
         `;
-      savedPlaceList.innerHTML+=savedPlaceCardHTML;
-      // writing to activity list 
-      addActivityToSelectedDay(place.name)
+
+      console.log(savedPlaceCardHTML);
+      
+      // add card to selected day
+      dayChosenDiv.innerHTML += savedPlaceCardHTML;
+
+      while (!document.getElementById(`card ${placeId} ${dayId}`)) {
+        console.log("waiting for card to exist");
+      }
+
+      // add event listener
+      document.querySelectorAll('.removeBtn').forEach((btn)=>{
+        btn.addEventListener('click',removeFromItinerary);
+      });
+
     } else {
       // Handle errors
       console.error('Error getting place details');
     }
-  })
+  }) 
+}
+
+
+function removeFromItinerary() {
+  console.log("Reached removeFromItinerary");
+  let btnId = this.id.split(" ");
+  // console.log("buttonid:",btnId);
+  let cardId = `card ${btnId[1]} ${btnId[2]}`;
+  let dayId = `${btnId[2]}`;
+  
+  // get itinerary card and day container
+  let card = document.getElementById(`${cardId}`);
+  let divContainer = document.getElementById(`${dayId}`);
+
+  // remove itinerary card from day container
+  divContainer.removeChild(card);
 }
 
 //create and display the place card for type 
@@ -202,10 +229,25 @@ export function createPlaceCard(type){
       const starPercentRounded=ratingCalc(place.rating);
       const numRatings=place.userRatingCount?place.userRatingCount.toLocaleString():'';
       let placeList=document.querySelector('.place-list');
+      
+      let days = document.querySelectorAll('.itineraryDayLabels');
+      let daysOptions = "";
+      
+      for (let i = 0; i < days.length; i++) {
+        let dayId = days[i].id.split("y");
+        let day = dayId[1];
+        daysOptions += `<li><a class="dropdown-item daysOptions" href="#" id="${place.id} ${days[i].id}">Day ${day}</a></li>`;
+      }
+    
       let placeCardHTML=
         `
-        <div class="place-card" id="${place.id}">
-          <button class="addToItinerary"> &#43 </button>
+        <div class="place-card" id="placeCard ${place.id}">
+          <div class="dropdown">
+            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="button ${place.id}"> &#43 </button>
+            <ul class="dropdown-menu displayDays" style="overflow: visible;">
+               ${daysOptions}
+            </ul>
+          </div>
           <div class="place-content">
             <div class="icon icon-${type}">
               <i class="material-icons">local_${type}</i>
@@ -275,5 +317,6 @@ function addActivityToSelectedDay(activity) {
     targetP.textContent += ", ";
   }
   targetP.textContent += activity;
+  
   
 }
