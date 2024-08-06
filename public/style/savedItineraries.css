@@ -9,6 +9,11 @@
   position: relative;
   overflow: hidden;
 }
+
+.itinerary-card:hover{
+  box-shadow: 0 7px 14px rgba(0,0,0,0.2);
+}
+
 .itinerary-card img {
   width: 120px;
   height: 80px;
@@ -24,4 +29,9 @@
 .itinerary-detail h3 {
   margin: 0;
   font-size: 1.2em;
+}
+
+.itinerary-edit-link{
+  color: black;
+  text-decoration: none;
 }

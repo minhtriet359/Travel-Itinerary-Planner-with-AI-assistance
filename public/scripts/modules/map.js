@@ -86,7 +86,7 @@ export async function nearbySearch(center,radius,type) {
   }
 }
 
-//Add markers for all location with matching type to the map
+//Add markers for all location with matching type tDao the map
 export async function addMarker(type){
   const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
   if(places[type]){
@@ -148,28 +148,26 @@ export function updatePlaceNumber(types){
 function addCardEventListeners() {
   // array with all place cards
   let allPlaces = document.querySelectorAll(".daysOptions"); 
-  
   // add event listener to "+" on each place card
   for(let i = 0; i < allPlaces.length; i++) {
-    allPlaces[i].addEventListener("click", addToItinerary);
+    const cardId = allPlaces[i].id.split(" ");
+    const placeId = cardId[0];
+    const dayId = cardId[1];
+    allPlaces[i].addEventListener("click", ()=>{
+      addToItinerary (placeId, dayId);
+    });
   }
 }
 
 // add clicked place to Itinerary
-function addToItinerary() {
+export function addToItinerary(placeId, dayId) {
   let service = new google.maps.places.PlacesService(map);
-  
-  // Get place and day ID
-  let cardId = this.id.split(" ");
-  let placeId = cardId[0];
-  let dayId = cardId[1];
-
   service.getDetails({ placeId: placeId }, function (place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       let dayChosenDiv = document.getElementById(`${dayId}`);
       let savedPlaceCardHTML=
         `
-        <div class="place-card" id="card ${placeId} ${dayId}">
+        <div class="added-place-card place-card" id="card ${placeId} ${dayId}">
             <div class="saved-place-content">
               <p class="place-name">${place.name}</p>
               <p class="place-address">${place.formatted_address}</p>
@@ -201,7 +199,7 @@ function addToItinerary() {
 }
 
 
-function removeFromItinerary() {
+export function removeFromItinerary() {
   let btnId = this.id.split(" ");
   // console.log("buttonid:",btnId);
   let cardId = `card ${btnId[1]} ${btnId[2]}`;
@@ -244,7 +242,7 @@ export function createPlaceCard(type){
         <div class="place-card" id="placeCard ${place.id}">
           <div class="dropdown">
             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="button ${place.id}"> &#43 </button>
-            <ul class="dropdown-menu displayDays" style="overflow: visible;">
+            <ul class="dropdown-menu displayDays">
                ${daysOptions}
             </ul>
           </div>

@@ -23,42 +23,59 @@ const daysOfWeek = [
 const destination = getInpFromUrl(inpVals[0]);
 const startDate = getInpFromUrl(inpVals[1]);
 const endDate = getInpFromUrl(inpVals[2]);
-const duration = getInpFromUrl(inpVals[3]);
+let duration = getInpFromUrl(inpVals[3]);
 const currentUrl = window.location.href;
+const guests = getInpFromUrl(inpVals[4]);
 
 renderHeader();
 initializeMap();
 
 /* ******** ITINERARY DETAIL SECTION ******** */
-
-function calculateTripDuration(startDate, endDate) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1; // +1 to include the start date
-}
-
 const itineraryDetailGrid = document.querySelector(".itinerary-details");
+
+// Ensure the variables are defined and not empty
+const isValidDestination = destination && destination.trim() !== "";
+const isValidStartDate = startDate && !isNaN(new Date(startDate).getTime());
+const isValidEndDate = endDate && !isNaN(new Date(endDate).getTime());
+const isValidDuration = duration && !isNaN(parseInt(duration, 10));
 
 //Generate itineray dates based on start/end dates
 let days = [];
-if (currentUrl.includes("startDate") && currentUrl.includes("endDate")) {
+if (currentUrl.includes("startDate") && currentUrl.includes("endDate") && isValidStartDate && isValidEndDate) {
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);
-  const duration = calculateTripDuration(startDateObj, endDateObj);
+  duration = calculateTripDuration(startDateObj, endDateObj);
+  console.log(duration);
   days = parseInt(duration, 10);
 }
 //Generate itineray dates based on duration for home page itineraries
-if (currentUrl.includes("duration")) {
+if (currentUrl.includes("duration") && isValidDuration) {
   const place = destination.split(",")[1];
   const city = destination.split(",")[0];
   await displayItineraryInfo(city, place);
   days = parseInt(duration, 10);
 }
 
+// //Generate saved activities
+// if(currentUrl.includes("itinerary-edit")){
+//   const itineraryId = new URL(currentUrl).pathname.split('/')[2];
+//   const url = `/api/savedActivities/${itineraryId}`;
+//   try {
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     data.activities.forEach(activity => {
+//        map.addToItinerary(activity.placeId, activity.dayId);
+//     });
+//   } catch (error) {
+//     console.error('Error fetching saved activities:', error);
+//   }
+// }
+
+
 for (let i = 0; i < days; i++) {
   itineraryDetailGrid.innerHTML += `
   <div class="accordion daily-schedule" id="accordion-day${i+1}">
-    <h3><div class="arrow right"></div> Day ${i + 1} </h3>
+    <h3 style="cursor: pointer;"><div class="arrow right"></div> Day ${i + 1} </h3>
     <div class="accordion-content itineraryDayLabels" id="day${i+1}"></div>
   </div>
   `;
@@ -73,6 +90,14 @@ for (let accordion of accordions) {
       accordion.classList.add("show");
     }
   });
+}
+
+
+
+function calculateTripDuration(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1; // +1 to include the start date
 }
 
 // Get the days of the week
@@ -242,4 +267,95 @@ function updateType() {
 document.getElementById("assitant-button").addEventListener("click", () => {
   const destination = getInpFromUrl(inpVals[0]);
   window.location.href = `/chatbot?destination=${encodeURIComponent(destination)}`;
+});
+
+
+/* ******** STORE DATA IN DATABASE ******** */
+async function saveItineraryData() {
+  try {
+    const response = await fetch('/api/saveItinerary', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ destination, startDate, endDate, duration, guests })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error saving itinerary:', errorData.message);
+      throw new Error('Failed to save itinerary');
+    }
+
+    const data = await response.json();
+    return data.itineraryId;
+  } catch (error) {
+    console.error('Error saving itinerary:', error);
+    return null;
+  }
+}
+
+async function saveActivityData(itineraryId, dayId, placeId){
+  try {
+    const response = await fetch('/api/saveActivity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ itineraryId, dayId, placeId })
+    });
+    if (!response.ok) {
+      throw new Error('Failed to save activity');
+    }
+    const data = await response.json();
+  } catch (error) {
+    console.error('Error saving activity:', error);
+  }
+}
+
+async function updateItineraryData(itineraryId, dayId, placeId){
+  try {
+    const response = await fetch('/api/updateActivity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ itineraryId, dayId, placeId })
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update activity');
+    }
+    const data = await response.json();
+  } catch (error) {
+    console.error('Error updating activity:', error);
+  }
+}
+
+document.querySelector(".save-itinerary-btn").addEventListener('click', async ()=>{
+  //check if user is logged in
+  let response = await fetch('/api/auth/status');
+  let data = await response.json();
+  if(!data.loggedIn){
+    alert("Please sign in to save your itinerary");
+    return;
+  }
+  // if(currentUrl.includes("itinerary-edit")){
+  //   const interaryId = new URL(currentUrl).pathname.split('/')[2];
+  // }else{
+  //   const itineraryId = await saveItineraryData();
+  // }
+
+  const itineraryId = await saveItineraryData();
+  
+  if (itineraryId){
+    document.querySelectorAll(".added-place-card").forEach(async (card) =>{
+      const cardId = card.id.split(" ");
+      const placeId = cardId[1];
+      const dayId = cardId[2];
+      await saveActivityData(itineraryId, dayId, placeId);
+    });
+    alert("Itinerary saved successfully");
+  } else {
+    console.log("Error saving itinerary");
+  }
 });

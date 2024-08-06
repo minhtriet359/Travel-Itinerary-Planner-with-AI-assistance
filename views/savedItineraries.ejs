@@ -13,15 +13,19 @@
   <body>
     <%- include('partials/header') %>
     <div class="main-saved-itineraries">
-      <div class="itinerary-card">
-        <img src="/img/location-photos/Alaska.jpg" alt="Alaska">
-        <div class="itinerary-detail">
-          <h3>Alaska</h3>
-        </div>
-        <div class="dates">
-          08/01/2024 - 08/04/2024
-        </div>
-      </div>
+      <% for(let i=0; i<itineraries.length; i++) { %>
+        <a href="/itinerary-edit/<%=itineraries[i].itineraryId%>" class="itinerary-edit-link">
+          <div class="itinerary-card">
+            <!-- <img src="/img/location-photos/Alaska.jpg" alt="Alaska"> -->
+            <div class="itinerary-detail">
+              <h3><%=itineraries[i].destination%></h3>
+            </div>
+            <div class="dates">
+              <%=itineraries[i].startDate%> - <%=itineraries[i].endDate%>
+            </div>
+          </div>
+        </a>
+      <% } %>
     </div>
 
     <%- include('partials/login.ejs') %>

@@ -38,6 +38,7 @@ const locations = require(locationsPath);
 
 //add express middleware to parse form data
 app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 app.use(function(req, res, next) {
   res.locals.username = req.session.username;
@@ -52,17 +53,36 @@ app.get('/', (req, res) => {
 
 app.get('/itinerary-detail', (req, res) => {
   const { destination, startDate, endDate, guests } = req.query;
-  res.render('itinerary', {googleAPIKey, destination, startDate, endDate, guests});
+  res.render('itinerary', {googleAPIKey, itinerary: [], activities: []});
 });
 
 
-app.get('/savedItineraries', isAuthenticated, (req, res) => {
-  res.render('savedItineraries',{googleAPIKey})
+app.get('/savedItineraries', isAuthenticated, async (req, res) => {
+  const sql = `SELECT * FROM itinerary WHERE userId = ?`;
+  let itineraries = await executeSQL (sql, [req.session.userId]);
+  // Format the dates
+  itineraries = itineraries.map(itinerary => {
+    return {
+      ...itinerary,
+      startDate: formatDate(itinerary.startDate),
+      endDate: formatDate(itinerary.endDate)
+    };
+  });
+  res.render('savedItineraries',{googleAPIKey, itineraries})
 });
 
-//API to fetch data from to backend for to front end Homepage
-app.get('/api/locations', (req, res) => {
-  res.json(locations);
+app.get('/itinerary-edit/:id', isAuthenticated, async (req, res) => {
+  try {
+    const itineraryId = req.params.id;
+    let sql = 'SELECT * FROM itinerary WHERE itineraryId = ?';
+    const itinerary = await executeSQL(sql, [itineraryId]);
+    sql = 'SELECT * FROM activities WHERE itineraryId = ?';
+    const activities = await executeSQL(sql, [itineraryId]);
+    res.render('itinerary', { googleAPIKey, itinerary, activities });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred while fetching itinerary details.');
+  }
 });
 
 //process sign-up request
@@ -197,6 +217,81 @@ app.post('/chatbot-response', async (req, res) => {
   }
 });
 
+//Fetch data from to backend to frontend for Homepage endpoint
+app.get('/api/locations', (req, res) => {
+  res.json(locations);
+});
+
+// Save itinerary endpoint
+app.post('/api/saveItinerary', async (req, res) => {
+  try {
+    const { destination, startDate, endDate, duration, guests } = req.body;
+    // Log the received data for debugging
+    console.log('Received data:', { destination, startDate, endDate, duration, guests });
+    // Validate incoming data
+    if (!destination || !startDate || !endDate || !duration || !guests) {
+      // Log which fields are missing
+      console.log('Missing fields:', {
+        destination: !!destination,
+        startDate: !!startDate,
+        endDate: !!endDate,
+        duration: !!duration,
+        guests: !!guests
+      });
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+    const sql = `INSERT INTO itinerary (destination, startDate, endDate, duration, guests, userId) VALUES (?, ?, ?, ?, ?, ?)`;
+    const params = [destination, startDate, endDate, duration, guests, req.session.userId];
+    const result = await executeSQL(sql, params);
+    const itineraryId = result.insertId;
+
+    res.json({ success: true, message: 'Itinerary saved successfully', itineraryId });
+  } catch (error) {
+    console.error('Error saving itinerary:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+//Save activity endpoint
+app.post('/api/saveActivity', async (req, res) => {
+  const {itineraryId, dayId, placeId} = req.body;
+  const sql = `INSERT INTO activities (itineraryId, dayId, placeId) VALUES (?, ?, ?)`;
+  const params = [itineraryId, dayId, placeId];
+  const result = await executeSQL(sql, params);
+  res.json({ success: true, message: 'Activity saved successfully' });
+});
+
+//update activity endpoint
+app.post('/api/updateActivity', async (req, res) => {
+  const {itineraryId, dayId, placeId} = req.body;
+  let sql = `DELETE FROM activities WHERE itineraryId = ?;`;
+  let result = await executeSQL(sql, [itineraryId]);
+  sql = `INSERT INTO activities (itineraryId, dayId, placeId) VALUES (?, ?, ?)`;
+  const params = [itineraryId, dayId, placeId];
+  result = await executeSQL(sql, params);
+  res.json({ success: true, message: 'Activity updated successfully' });
+});
+
+//get saved activities for itinerary endpoint
+app.get('/api/savedActivities/:itineraryId', async (req, res) => {
+  const { itineraryId } = req.params;
+  try {
+    const sql = 'SELECT * FROM activities WHERE itineraryId = ?';
+    const activities = await executeSQL(sql, [itineraryId]);
+    res.json({ success: true, activities });
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while fetching activities.' });
+  }
+});
+
+// check authentication status route
+app.get('/api/auth/status', (req, res) => {
+  res.json({
+    loggedIn: req.session.authenticated || false
+  });
+});
+
 // functions
 async function executeSQL(sql, params) {
   return new Promise (function (resolve, reject) {
@@ -219,9 +314,23 @@ function isAuthenticated(req, res, next) {
   if (req.session.authenticated) {
     next();
   } else {
-    res.redirect("/");
+    res.status(401).json({
+      message: "You need to sign in",
+      redirectUrl: req.originalUrl,
+    });
   }
 }
+
+
+//date format
+function formatDate(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = ('0' + (d.getMonth() + 1)).slice(-2); // Months are zero-based
+  const day = ('0' + d.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
 
 //start server
 app.listen(3000, () =>{

@@ -43,12 +43,8 @@ html, body {
 .itinerary-heading {
   font-size: 2em;
   font-weight: 700;
-  color: #333;
   margin: 40px 20px;
-  text-align: center;
-  border-bottom: 2px solid #e6e6e6;
   padding-bottom: 10px;
-  font-family: 'Montserrat', sans-serif;
 }
 
 
@@ -119,6 +115,7 @@ html, body {
   padding: 3px;
   position: relative;
   bottom: 5px;
+  cursor: pointer;
 
   transition: .5s;
 }
@@ -220,7 +217,6 @@ li{
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  /* overflow: hidden; */
   position: relative;
 
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -229,7 +225,6 @@ li{
 
 .place-card:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-  cursor: pointer;
 }
 
 .place-card .dropdown{
@@ -239,6 +234,7 @@ li{
 }
 
 .place-img-container{
+  width: 12rem;
   border-radius: 0 4px 4px 0;
   overflow: hidden;
 }
@@ -291,59 +287,3 @@ li{
 .stars-inner::before {
   content: "★★★★★"; /* Using Unicode stars */
 }
-
-.accordion {
-  cursor: pointer;
-  padding: 18px;
-  border: none;
-  text-align: left;
-  outline: none;
-  transition: 0.4s;
-  background-color: #ffffff;
-  margin: 10px 0;
-  font-size: 1.2em;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-}
-
-.accordion:hover, .accordion.active {
-  background-color: #f1f1f1;
-}
-
-.accordion-content {
-  display: none;
-  padding: 0 18px;
-  background-color: #ffffff;
-  overflow: hidden;
-  border: 1px solid #e6e6e6;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-}
-
-.accordion.show .accordion-content {
-  display: block;
-}
-
-.accordion.show .arrow {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-}
-
-.arrow {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-  position: relative;
-  bottom: 5px;
-  transition: 0.5s;
-}
-
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-

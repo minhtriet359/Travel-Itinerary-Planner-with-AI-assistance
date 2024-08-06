@@ -29,8 +29,19 @@
             </div>
         
             <div class="itinerary-details">
-                <h2 class="itinerary-heading">Itinerary</h2>
-                 <!-- Daily Trip content -->
+              <h2 class="itinerary-heading">Itinerary</h2>
+              <!-- Daily Trip content -->
+              <% if (itinerary && itinerary.length > 0 && activities && activities.length > 0) { %>
+                <% for (let i = 1; i <= itinerary[0].duration; i++) { %>
+                  <div class="accordion daily-schedule" id="accordion-day<%= i %>">
+                    <h3 style="cursor: pointer;">
+                      <div class="arrow right"></div>
+                      Day <%= i %>
+                    </h3>
+                    <div class="accordion-content itineraryDayLabels" id="day<%= i %>"></div>
+                  </div>
+                <% } %>
+              <% } %>
             </div>
             
             <div class="saved-place-detail-grid">
