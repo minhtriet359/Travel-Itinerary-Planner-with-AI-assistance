@@ -252,24 +252,29 @@ app.post('/api/saveItinerary', async (req, res) => {
   }
 });
 
+// Delete itinerary endpoint
+app.post('/api/deleteItinerary', async (req, res) => {
+  const {itineraryId} = req.body;
+  let sql = `DELETE FROM itinerary WHERE itineraryId = ?;`;
+  let result = await executeSQL(sql, [itineraryId]);
+  res.json({ success: true, message: 'Itinerary deleted successfully' });
+});
+
 //Save activity endpoint
 app.post('/api/saveActivity', async (req, res) => {
-  const {itineraryId, dayId, placeId} = req.body;
-  const sql = `INSERT INTO activities (itineraryId, dayId, placeId) VALUES (?, ?, ?)`;
-  const params = [itineraryId, dayId, placeId];
+  const {itineraryId, dayId, placeId, name, address} = req.body;
+  const sql = `INSERT INTO activities (itineraryId, dayId, placeId, name, address) VALUES (?, ?, ?, ?, ?)`;
+  const params = [itineraryId, dayId, placeId, name, address];
   const result = await executeSQL(sql, params);
   res.json({ success: true, message: 'Activity saved successfully' });
 });
 
 //update activity endpoint
-app.post('/api/updateActivity', async (req, res) => {
-  const {itineraryId, dayId, placeId} = req.body;
+app.post('/api/deleteActivities', async (req, res) => {
+  const {itineraryId} = req.body;
   let sql = `DELETE FROM activities WHERE itineraryId = ?;`;
   let result = await executeSQL(sql, [itineraryId]);
-  sql = `INSERT INTO activities (itineraryId, dayId, placeId) VALUES (?, ?, ?)`;
-  const params = [itineraryId, dayId, placeId];
-  result = await executeSQL(sql, params);
-  res.json({ success: true, message: 'Activity updated successfully' });
+  res.json({ success: true, message: 'Activities deleted successfully' });
 });
 
 //get saved activities for itinerary endpoint

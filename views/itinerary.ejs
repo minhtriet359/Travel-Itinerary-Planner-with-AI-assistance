@@ -38,7 +38,24 @@
                       <div class="arrow right"></div>
                       Day <%= i %>
                     </h3>
-                    <div class="accordion-content itineraryDayLabels" id="day<%= i %>"></div>
+                    <div class="accordion-content itineraryDayLabels" id="day<%= i %>">
+                        <% 
+                        const dayId = `day${i}`;
+                        %>
+                        <% for (let j = 0; j < activities.length; j++) { %>
+                            <% if (activities[j].dayId === dayId) { %>
+                              <div class="added-place-card place-card" id="card <%= activities[j].placeId %> <%= activities[j].dayId %>" data-name="<%= activities[j].name %>" data-address="<%= activities[j].address %>">
+                                <div class="saved-place-content">
+                                  <p class="place-name"><%= activities[j].name %></p>
+                                  <p class="place-address"><%= activities[j].address %></p>
+                                  <p>
+                                    <button type="button" class="btn btn-secondary btn-sm removeBtn" id="remove <%= activities[j].placeId %> <%= activities[j].dayId %>"> Remove </button>
+                                  </p>
+                                </div>
+                              </div>
+                            <% } %>
+                        <% } %>
+                    </div>
                   </div>
                 <% } %>
               <% } %>

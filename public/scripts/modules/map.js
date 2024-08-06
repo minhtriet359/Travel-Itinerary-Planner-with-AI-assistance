@@ -154,20 +154,20 @@ function addCardEventListeners() {
     const placeId = cardId[0];
     const dayId = cardId[1];
     allPlaces[i].addEventListener("click", ()=>{
-      addToItinerary (placeId, dayId);
+      addToItinerary (map, placeId, dayId);
     });
   }
 }
 
 // add clicked place to Itinerary
-export function addToItinerary(placeId, dayId) {
-  let service = new google.maps.places.PlacesService(map);
+export function addToItinerary(aMap, placeId, dayId) {
+  let service = new google.maps.places.PlacesService(aMap);
   service.getDetails({ placeId: placeId }, function (place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       let dayChosenDiv = document.getElementById(`${dayId}`);
       let savedPlaceCardHTML=
         `
-        <div class="added-place-card place-card" id="card ${placeId} ${dayId}">
+        <div class="added-place-card place-card" id="card ${placeId} ${dayId}" data-name="${place.name}" data-address="${place.formatted_address}">
             <div class="saved-place-content">
               <p class="place-name">${place.name}</p>
               <p class="place-address">${place.formatted_address}</p>
@@ -188,7 +188,12 @@ export function addToItinerary(placeId, dayId) {
 
       // add event listener
       document.querySelectorAll('.removeBtn').forEach((btn)=>{
-        btn.addEventListener('click',removeFromItinerary);
+        let btnId=btn.id.split(" ");
+        if (btnId){
+          btn.addEventListener('click',()=>{
+            removeFromItinerary(btnId);
+          });
+        }
       });
 
     } else {
@@ -199,24 +204,29 @@ export function addToItinerary(placeId, dayId) {
 }
 
 
-export function removeFromItinerary() {
-  let btnId = this.id.split(" ");
-  // console.log("buttonid:",btnId);
+export function removeFromItinerary(btnId) {
   let cardId = `card ${btnId[1]} ${btnId[2]}`;
   let dayId = `${btnId[2]}`;
   // get itinerary card and day container
-  let card = document.getElementById(`${cardId}`);
-  let divContainer = document.getElementById(`${dayId}`);
+  let card = document.getElementById(cardId);
+  let divContainer = document.getElementById(dayId);
   let accordion = document.getElementById(`accordion-${dayId}`);
-
-  // Check if the accordion is currently open
-  let isAccordionOpen = accordion.classList.contains("show");
-  console.log(isAccordionOpen);
-
-  // remove itinerary card from day container
-  divContainer.removeChild(card);
-
-  console.log(`Accordion state after removal: ${accordion.classList.contains("show")}`);
+  // Check if elements exist
+  if (!card) {
+    console.error(`Card with ID ${cardId} not found.`);
+    return;
+  }
+  if (!divContainer) {
+    console.error(`Container with ID ${dayId} not found.`);
+    return;
+  }
+  // Check if the card is a child of the container
+  if (divContainer.contains(card)) {
+    // remove itinerary card from day container
+    divContainer.removeChild(card);
+  } else {
+    console.error(`Card with ID ${cardId} is not a child of the container with ID ${dayId}.`);
+  }
 }
 
 //create and display the place card for type 

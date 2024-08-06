@@ -56,22 +56,6 @@ if (currentUrl.includes("duration") && isValidDuration) {
   days = parseInt(duration, 10);
 }
 
-// //Generate saved activities
-// if(currentUrl.includes("itinerary-edit")){
-//   const itineraryId = new URL(currentUrl).pathname.split('/')[2];
-//   const url = `/api/savedActivities/${itineraryId}`;
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     data.activities.forEach(activity => {
-//        map.addToItinerary(activity.placeId, activity.dayId);
-//     });
-//   } catch (error) {
-//     console.error('Error fetching saved activities:', error);
-//   }
-// }
-
-
 for (let i = 0; i < days; i++) {
   itineraryDetailGrid.innerHTML += `
   <div class="accordion daily-schedule" id="accordion-day${i+1}">
@@ -92,7 +76,22 @@ for (let accordion of accordions) {
   });
 }
 
-
+//If user is on edit page
+if(currentUrl.includes("itinerary-edit")){
+  //show all activities when page load
+  document.querySelectorAll(".accordion").forEach((accordion)=>{
+    accordion.classList.add("show");
+  });
+  //add event listeners for remove buttons
+  document.querySelectorAll('.removeBtn').forEach((btn)=>{
+    const btnId=btn.id.split(" ");
+    if (btnId){
+      btn.addEventListener('click',()=>{
+        map.removeFromItinerary(btnId);
+      });
+    }
+  });
+}
 
 function calculateTripDuration(startDate, endDate) {
   const start = new Date(startDate);
@@ -295,14 +294,14 @@ async function saveItineraryData() {
   }
 }
 
-async function saveActivityData(itineraryId, dayId, placeId){
+async function saveActivityData(itineraryId, dayId, placeId, name , address){
   try {
     const response = await fetch('/api/saveActivity', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ itineraryId, dayId, placeId })
+      body: JSON.stringify({ itineraryId, dayId, placeId, name, address })
     });
     if (!response.ok) {
       throw new Error('Failed to save activity');
@@ -313,21 +312,21 @@ async function saveActivityData(itineraryId, dayId, placeId){
   }
 }
 
-async function updateItineraryData(itineraryId, dayId, placeId){
+async function deleteActivities(itineraryId){
   try {
-    const response = await fetch('/api/updateActivity', {
+    const response = await fetch('/api/deleteActivities', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ itineraryId, dayId, placeId })
+      body: JSON.stringify({ itineraryId })
     });
     if (!response.ok) {
-      throw new Error('Failed to update activity');
+      throw new Error('Failed to delete activities');
     }
     const data = await response.json();
   } catch (error) {
-    console.error('Error updating activity:', error);
+    console.error('Error deleting activities:', error);
   }
 }
 
@@ -339,20 +338,22 @@ document.querySelector(".save-itinerary-btn").addEventListener('click', async ()
     alert("Please sign in to save your itinerary");
     return;
   }
-  // if(currentUrl.includes("itinerary-edit")){
-  //   const interaryId = new URL(currentUrl).pathname.split('/')[2];
-  // }else{
-  //   const itineraryId = await saveItineraryData();
-  // }
-
-  const itineraryId = await saveItineraryData();
-  
+  const isEditing = currentUrl.includes("itinerary-edit");
+  let itineraryId;
+  if (isEditing) {
+    itineraryId = new URL(currentUrl).pathname.split('/')[2];
+    await deleteActivities(itineraryId);
+  } else {
+    itineraryId = await saveItineraryData();
+  }
   if (itineraryId){
     document.querySelectorAll(".added-place-card").forEach(async (card) =>{
       const cardId = card.id.split(" ");
       const placeId = cardId[1];
       const dayId = cardId[2];
-      await saveActivityData(itineraryId, dayId, placeId);
+      const name = card.getAttribute('data-name');
+      const address = card.getAttribute('data-address');
+      await saveActivityData(itineraryId, dayId, placeId, name, address);
     });
     alert("Itinerary saved successfully");
   } else {
