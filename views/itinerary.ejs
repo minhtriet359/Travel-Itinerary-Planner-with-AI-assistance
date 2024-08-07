@@ -114,6 +114,12 @@
     <%- include('partials/login.ejs') %>
     <%- include('partials/signup.ejs') %>
 
+    <% if (itinerary && itinerary.length > 0 && activities && activities.length > 0) { %>
+    <script>
+      // Embed the itinerary destination value
+      const itineraryDestination = "<%= itinerary[0].destination %>";
+    </script>
+    <% } %>
     <script src="/scripts/itinerary.js" type="module"></script>
     
 </body>

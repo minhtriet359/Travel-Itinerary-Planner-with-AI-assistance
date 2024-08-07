@@ -20,15 +20,21 @@ const daysOfWeek = [
   "Saturday",
   "Sunday",
 ];
-const destination = getInpFromUrl(inpVals[0]);
+const currentUrl = window.location.href;
+let destination;
+if(currentUrl.includes("itinerary-edit")){
+  destination = itineraryDestination;
+  console.log(destination);
+}else{
+  destination = getInpFromUrl(inpVals[0]);
+}
 const startDate = getInpFromUrl(inpVals[1]);
 const endDate = getInpFromUrl(inpVals[2]);
 let duration = getInpFromUrl(inpVals[3]);
-const currentUrl = window.location.href;
 const guests = getInpFromUrl(inpVals[4]);
 
 renderHeader();
-initializeMap();
+initializeMap(destination);
 
 /* ******** ITINERARY DETAIL SECTION ******** */
 const itineraryDetailGrid = document.querySelector(".itinerary-details");
@@ -157,8 +163,8 @@ function findByPlaceCity(array, place, city) {
 }
 
 /* ******** MAP CONTROLLER ******** */
-async function initializeMap() {
-  const destination = getInpFromUrl(inpVals[0]);
+async function initializeMap(destination) {
+  // const destination = getInpFromUrl(inpVals[0]);
   if (destination) {
     try {
       const { lat, lng } = await map.getLatLngFromAddress(destination);
