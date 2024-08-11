@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="/style/homePage.css">
     <link rel="stylesheet" href="/style/sidebar.css">
     <!-- pre-hooked libraries and APIs  -->
-    <%- include ('partials/links') %>
+    <%- include ('partials/links.ejs') %>
   </head>
   <body>
-    <%- include('partials/header') %>
+    <%- include('partials/header.ejs') %>
     <div class="main-home">
     </div>
-      
+    <%- include('partials/footer.ejs') %>
     <%- include('partials/login.ejs') %>
     <%- include('partials/signup.ejs') %>
     <script src="/scripts/home.js" type="module"></script>
