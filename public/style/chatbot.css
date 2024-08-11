@@ -1,9 +1,22 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.chatbot-main {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  padding-top: 85px;
+}
+
 /* Chatbot Section */
 .chatbot {
   display: flex; /* Use flexbox */
   flex-direction: column;
   align-items: center; /* Center horizontally */
-  width: 70%;
+  width: 50%;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -11,6 +24,14 @@
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a sleek look */
   font-family: 'Montserrat', sans-serif; /* Use the modern font */
+}
+
+#map {
+  width: 50%;
+  position: fixed;
+  right: 0;
+  top: 0px;
+  height: 100%;
 }
 
 .chatbot h1 {
