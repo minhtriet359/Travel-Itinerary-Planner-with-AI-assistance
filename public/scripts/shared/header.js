@@ -131,4 +131,12 @@ export function renderHeader(){
             });
         })
     });
+
+    document.querySelector('.website-header-middle-section-smallscreen').addEventListener('click', () => {
+        document.querySelector('.website-header-mobile').style.display = 'block';
+    });
+
+    document.querySelector('.overlay-close').addEventListener('click', () => {
+        document.querySelector('.website-header-mobile').style.display = 'none';
+    });
 }

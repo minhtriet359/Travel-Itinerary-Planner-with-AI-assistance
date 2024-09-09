@@ -22,6 +22,11 @@
     </button>
   </div>
 
+  <button class="website-header-middle-section-smallscreen">
+    <img class="search-icon" src="/img/icon/search-icon.png">
+    <span>Search</span>
+  </button>
+
   <div class="website-header-right-section fw-light">
     <% if (typeof message != "undefined") { %>
       <%=message%>   
@@ -40,5 +45,23 @@
         <a href="#" id="signup-modal" class="dropdown-item fw-light">Sign up</a>
       <% } %>
     </div>
+  </div>
+</div>
+
+<div class="website-header-mobile">
+  <div class="website-header-mobile-overlay">
+    <button class="overlay-close">X</button>
+    <input class="search-input-mobile" id="search-destination-mobile" type="text" placeholder="Search destination">
+    <input class="search-input-mobile" id="start-date-mobile" type="text" placeholder="Start date" class="search-input">
+    <input class="search-input-mobile" id="end-date-mobile" type="text" placeholder="End date" class="search-input">
+    <select class="search-input-mobile" id="add-guest-mobile">
+      <option value="1">1 guest</option>
+      <option value="2">2 guests</option>
+      <option value="3">3+ guests</option>
+    </select>
+    <button class="search-button-mobile">
+      <img class="search-icon" src="/img/icon/search-icon.png">
+      <span>Search</span>
+    </button>
   </div>
 </div>
